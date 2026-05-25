@@ -23,8 +23,13 @@ load test_helper
   [ "$status" -ne 0 ]
 }
 
-@test "valid_url: rejects shell metachars" {
-  run valid_url "URL" 'https://bad.com/$(rm)'
+@test "valid_url: rejects angle brackets" {
+  run valid_url "URL" 'https://bad.com/<script>'
+  [ "$status" -ne 0 ]
+}
+
+@test "valid_url: rejects backtick" {
+  run valid_url "URL" 'https://bad.com/`whoami`'
   [ "$status" -ne 0 ]
 }
 
