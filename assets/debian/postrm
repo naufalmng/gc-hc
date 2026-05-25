@@ -3,14 +3,14 @@ set -e
 
 case "$1" in
   remove|purge)
-    rm -rf /etc/gc-chkr /var/lib/gc-chkr /var/log/gc-chkr /etc/systemd/system/gc-chkr.timer.d
-    printf '[INFO] gc-chkr data removed\n'
+    rm -rf /etc/gc-hc /var/lib/gc-hc /var/log/gc-hc /etc/systemd/system/gc-hc.timer.d
+    printf '[INFO] gc-hc data removed\n'
     ;;
 esac
 
 if command -v systemctl >/dev/null 2>&1; then
   systemctl daemon-reload >/dev/null 2>&1 || true
-  systemctl reset-failed gc-chkr.service gc-chkr.timer >/dev/null 2>&1 || true
+  systemctl reset-failed gc-hc.service gc-hc.timer >/dev/null 2>&1 || true
 fi
 
 exit 0

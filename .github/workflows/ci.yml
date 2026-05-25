@@ -51,8 +51,8 @@ jobs:
 
       - name: Verify dist artifacts parse
         run: |
-          bash -n dist/gc-chkr.sh
-          bash -n dist/gc-chkr
+          bash -n dist/gc-hc.sh
+          bash -n dist/gc-hc
 
       - name: Upload built artifacts
         uses: actions/upload-artifact@v4
@@ -78,7 +78,7 @@ jobs:
           # build path by extracting the build_deb function and running it.
           # We cannot apt-get install without root in some environments, so
           # we only assert that .deb was produced.
-          sudo bash "$GITHUB_WORKSPACE/dist/gc-chkr.sh" install --yes --keep-deb || true
+          sudo bash "$GITHUB_WORKSPACE/dist/gc-hc.sh" install --yes --keep-deb || true
           ls -la *.deb || ls -la /tmp/debtest
 
       - name: Verify .deb is valid

@@ -53,7 +53,7 @@ check_tls() {
 
   port="$(port_from_url "$url")"
 
-  if result="$(printf '' | timeout "$GC_CHKR_TIMEOUT" openssl s_client -servername "$host" -connect "${host}:${port}" -verify_return_error 2>/dev/null | awk '/Verify return code:/ { print; found=1 } END { if (!found) exit 2 }')"; then
+  if result="$(printf '' | timeout "$GC_HC_TIMEOUT" openssl s_client -servername "$host" -connect "${host}:${port}" -verify_return_error 2>/dev/null | awk '/Verify return code:/ { print; found=1 } END { if (!found) exit 2 }')"; then
     record "${name}.tls" "pass" "handshake_ok" "${host}:${port}" "$(trim "$result")"
     return 0
   fi
@@ -90,7 +90,7 @@ check_prom_query() {
   local url=""
   local code=""
 
-  if [[ "$GC_CHKR_PROM_QUERY" != "true" ]]; then
+  if [[ "$GC_HC_PROM_QUERY" != "true" ]]; then
     record "prom.query" "skip" "disabled" "" ""
     return 0
   fi
@@ -122,9 +122,9 @@ loki_payload() {
 
   ts="$(date +%s%N)"
   host="$(hostname -f 2>/dev/null || hostname)"
-  msg="gc-chkr ${host} $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  msg="gc-hc ${host} $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
-  printf '{"streams":[{"stream":{"job":"gc-chkr","host":"%s"},"values":[["%s","%s"]]}]}' \
+  printf '{"streams":[{"stream":{"job":"gc-hc","host":"%s"},"values":[["%s","%s"]]}]}' \
     "$(json_escape "$host")" \
     "$ts" \
     "$(json_escape "$msg")"
@@ -134,7 +134,7 @@ check_loki() {
   local code=""
   local payload=""
 
-  if [[ "$GC_CHKR_LOKI_WRITE" != "true" ]]; then
+  if [[ "$GC_HC_LOKI_WRITE" != "true" ]]; then
     record "loki.write" "skip" "disabled" "$GCLOUD_HOSTED_LOGS_URL" ""
     return 0
   fi
@@ -170,7 +170,7 @@ check_loki() {
 check_fleet() {
   local code=""
 
-  if [[ "$GC_CHKR_FLEET" != "true" ]]; then
+  if [[ "$GC_HC_FLEET" != "true" ]]; then
     record "fleet" "skip" "disabled" "${GCLOUD_FM_URL:-}" ""
     return 0
   fi

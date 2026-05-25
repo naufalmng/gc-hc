@@ -1,4 +1,4 @@
-# gc-chkr — Makefile
+# gc-hc — Makefile
 #
 # Targets are deliberately thin wrappers around scripts/. The shell scripts
 # are the source of truth; make is just an ergonomic surface.
@@ -11,14 +11,14 @@ SHELL      := bash
 .PHONY: help build clean test lint format install uninstall standalone deb release version
 
 help:                    ## show this help
-	@awk 'BEGIN{FS=":.*##"; printf "\n  \033[1mgc-chkr v$(VERSION)\033[0m\n\n"} \
+	@awk 'BEGIN{FS=":.*##"; printf "\n  \033[1mgc-hc v$(VERSION)\033[0m\n\n"} \
 	      /^[a-zA-Z_-]+:.*##/{ printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
 	@echo
 
 version:                 ## print version
 	@echo $(VERSION)
 
-build:                   ## assemble dist/gc-chkr.sh and dist/gc-chkr
+build:                   ## assemble dist/gc-hc.sh and dist/gc-hc
 	@bash scripts/build.sh
 
 clean:                   ## remove build artifacts
@@ -42,16 +42,16 @@ test: build              ## run bats unit tests against dist artifacts
 	@bats tests/bats
 
 install: build           ## build + install via apt (requires root)
-	@sudo bash $(DIST)/gc-chkr.sh install --yes
+	@sudo bash $(DIST)/gc-hc.sh install --yes
 
 uninstall:               ## remove via apt
-	@sudo apt-get remove -y gc-chkr
+	@sudo apt-get remove -y gc-hc
 
-standalone: build        ## drop dist/gc-chkr at $PWD as standalone binary
-	@bash $(DIST)/gc-chkr.sh standalone --yes --force
+standalone: build        ## drop dist/gc-hc at $PWD as standalone binary
+	@bash $(DIST)/gc-hc.sh standalone --yes --force
 
 deb: build               ## build a .deb in dist/
-	@sudo bash $(DIST)/gc-chkr.sh install --yes --keep-deb || true
+	@sudo bash $(DIST)/gc-hc.sh install --yes --keep-deb || true
 	@ls -la $(ROOT)/*.deb 2>/dev/null || true
 
 release:                 ## tag the current VERSION and push (requires gh)

@@ -1,27 +1,30 @@
 #!/usr/bin/env bash
-# tests/parity.sh — verify the built dist artifact preserves all critical
-# behaviors of the original single-file gc-chkr.sh.
+# tests/parity.sh — verify the built dist artifact retains every contract
+# the public API depends on. Self-contained (no reference file needed).
 #
-# Approach: we do NOT byte-compare (the new file is reorganized + colored).
-# Instead we assert presence of every meaningful contract:
-#   - All systemd unit lines
-#   - All env var names
-#   - All HTTP status code branches
-#   - All maintainer script effects
-#   - All public commands
+# What we check:
+#   - Both artifacts parse cleanly under bash -n
+#   - Tool exposes all expected commands in dispatch
+#   - All Grafana Cloud env names present
+#   - All HTTP status branches handled
+#   - systemd unit content correctly embedded
+#   - dpkg maintainer scripts correctly embedded
+#   - API key validator still enforces glc_ prefix
+#   - Alloy fallback paths preserved
+#   - Standalone mode still wired
+#   - Pipe-install one-liner still documented
 
 set -e
 
 ROOT="$(cd -- "$(dirname -- "$0")/.." >/dev/null && pwd -P)"
 cd "$ROOT"
 
-ORIG="gc-chkr.sh"
-NEW="dist/gc-chkr.sh"
-TOOL="dist/gc-chkr"
+NEW="dist/gc-hc.sh"
+TOOL="dist/gc-hc"
 
-if [[ ! -f "$ORIG" ]]; then
-  echo "  skip  $ORIG missing — run from repo root"
-  exit 0
+if [[ ! -f "$NEW" || ! -f "$TOOL" ]]; then
+  printf '  FAIL  build artifacts missing — run scripts/build.sh first\n' >&2
+  exit 1
 fi
 
 PASS=0
@@ -41,12 +44,11 @@ assert_in() {
 }
 
 echo "=== Built artifacts parse cleanly ==="
-bash -n "$ORIG" && { echo "  ok    original parses"; PASS=$((PASS+1)); }
 bash -n "$NEW"  && { echo "  ok    installer parses"; PASS=$((PASS+1)); }
-bash -n "$TOOL" && { echo "  ok    tool parses"; PASS=$((PASS+1)); }
+bash -n "$TOOL" && { echo "  ok    tool parses";      PASS=$((PASS+1)); }
 
 echo
-echo "=== Tool exposes all original commands ==="
+echo "=== Tool exposes all expected commands ==="
 for cmd in onboard config show-config check status logs remove enable disable help version; do
   if grep -Eq "^[[:space:]]*${cmd}\)" "$TOOL"; then
     printf '  ok    command: %s\n' "$cmd"
@@ -58,13 +60,13 @@ for cmd in onboard config show-config check status logs remove enable disable he
 done
 
 echo
-echo "=== All Grafana env names preserved ==="
+echo "=== All Grafana env names present ==="
 for v in GCLOUD_HOSTED_METRICS_URL GCLOUD_HOSTED_METRICS_ID \
          GCLOUD_HOSTED_LOGS_URL    GCLOUD_HOSTED_LOGS_ID \
          GCLOUD_FM_URL             GCLOUD_RW_API_KEY \
-         GC_CHKR_TIMEOUT GC_CHKR_RETRIES GC_CHKR_RETRY_DELAY \
-         GC_CHKR_DNS GC_CHKR_TLS GC_CHKR_LOKI_WRITE \
-         GC_CHKR_PROM_QUERY GC_CHKR_FLEET; do
+         GC_HC_TIMEOUT GC_HC_RETRIES GC_HC_RETRY_DELAY \
+         GC_HC_DNS GC_HC_TLS GC_HC_LOKI_WRITE \
+         GC_HC_PROM_QUERY GC_HC_FLEET; do
   assert_in "$TOOL" "$v" "env: $v"
 done
 
@@ -77,7 +79,7 @@ done
 echo
 echo "=== systemd unit content embedded ==="
 for line in 'Type=oneshot' 'ProtectSystem=full' 'NoNewPrivileges=true' \
-            'ReadWritePaths=/var/lib/gc-chkr /var/log/gc-chkr' \
+            'ReadWritePaths=/var/lib/gc-hc /var/log/gc-hc' \
             'OnBootSec=1m' 'OnCalendar=*:0/5:00' \
             'Persistent=true' 'WantedBy=timers.target'; do
   assert_in "$NEW" "$line" "unit: $line"
@@ -85,15 +87,20 @@ done
 
 echo
 echo "=== dpkg maintainer effects embedded ==="
-assert_in "$NEW" 'systemctl daemon-reload'                   "postinst: daemon-reload"
-assert_in "$NEW" 'systemctl disable --now gc-chkr.timer'     "prerm: disable timer"
-assert_in "$NEW" 'rm -rf /etc/gc-chkr /var/lib/gc-chkr'      "postrm: data wipe"
-assert_in "$NEW" 'systemctl reset-failed gc-chkr.service gc-chkr.timer' "postrm: reset-failed"
+assert_in "$NEW" 'systemctl daemon-reload'                       "postinst: daemon-reload"
+assert_in "$NEW" 'systemctl disable --now gc-hc.timer'           "prerm: disable timer"
+assert_in "$NEW" 'rm -rf /etc/gc-hc /var/lib/gc-hc'              "postrm: data wipe"
+assert_in "$NEW" 'systemctl reset-failed gc-hc.service gc-hc.timer' "postrm: reset-failed"
 
 echo
-echo "=== Pipe-install one-liners still documented ==="
-assert_in "$NEW" 'curl -fsSL'  "pipe install example"
+echo "=== Pipe-install one-liner documented ==="
+assert_in "$NEW" 'curl -fsSL'                    "pipe install example"
 assert_in "$NEW" 'sudo bash -s -- install --yes' "non-interactive flag"
+
+echo
+echo "=== Brand identifiers ==="
+assert_in "$NEW"  'gc-hc'  "kebab brand in installer"
+assert_in "$TOOL" 'gchc'   "short alias documented"
 
 echo
 echo "=== API key validator still requires glc_ prefix ==="
@@ -107,8 +114,8 @@ assert_in "$TOOL" '/etc/sysconfig/alloy'  "alloy sysconfig"
 
 echo
 echo "=== Standalone mode preserved ==="
-assert_in "$NEW"  'standalone'             "standalone action"
-assert_in "$TOOL" '.gc-chkr'               "standalone home"
+assert_in "$NEW"  'standalone' "standalone action"
+assert_in "$TOOL" '.gc-hc'     "standalone home"
 
 echo
 printf '\nTotal: %d passed, %d failed\n' "$PASS" "$FAIL"

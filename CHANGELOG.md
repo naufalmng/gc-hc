@@ -7,6 +7,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-05-25
+
+### ⚠️ BREAKING CHANGES
+
+The project has been **rebranded from `gc-chkr` to `gc-hc`** (Grafana Cloud Health Check).
+Every user-facing identifier changes. There is **no in-place upgrade path** from 1.x —
+remove the old package first, then install 2.0.0 cleanly.
+
+| Old (1.x)              | New (2.0.0)            |
+| ---------------------- | ---------------------- |
+| `gc-chkr` binary       | `gc-hc`                |
+| `gchk` short alias     | `gchc`                 |
+| `/etc/gc-chkr/env`     | `/etc/gc-hc/env`       |
+| `/var/lib/gc-chkr/`    | `/var/lib/gc-hc/`      |
+| `/var/log/gc-chkr/`    | `/var/log/gc-hc/`      |
+| `gc-chkr.service`      | `gc-hc.service`        |
+| `gc-chkr.timer`        | `gc-hc.timer`          |
+| `GC_CHKR_*` env vars   | `GC_HC_*`              |
+| `apt-get remove gc-chkr` | `apt-get remove gc-hc` |
+| repo: `naufalmng/gc-chkr` | `naufalmng/gc-hc` (auto-redirects) |
+
+#### Migrating from 1.x
+
+```bash
+# 1. save the old config
+sudo cp /etc/gc-chkr/env ~/gc-chkr-backup.env
+sudo apt-get remove gc-chkr
+
+# 2. install 2.0.0 fresh
+curl -fsSL https://github.com/naufalmng/gc-hc/releases/latest/download/gc-hc.sh | sudo bash
+
+# 3. reuse the old config (the GCLOUD_* names did not change, only GC_CHKR_* -> GC_HC_*)
+sudo install -d -m 0750 /etc/gc-hc
+sudo sed 's/GC_CHKR_/GC_HC_/g' ~/gc-chkr-backup.env | sudo tee /etc/gc-hc/env > /dev/null
+sudo chmod 0600 /etc/gc-hc/env
+sudo gc-hc check
+```
+
+The `GCLOUD_*` variables (URLs, IDs, API key) keep their original names — only the
+`GC_CHKR_*` tunables were renamed to `GC_HC_*`.
+
+### Changed
+- All identifiers renamed for the rebrand: binaries, package, paths, env var prefix, systemd unit names, repo URL.
+- Banner ASCII art redrawn for "GC HC" instead of "GC CHKR".
+- README simplified to a bilingual EN/ID quick-start. Detailed reference moved to `documentation.md` (also bilingual).
+
+### Added
+- `documentation.md` — full reference: install variants, all commands, config schema, architecture diagram, design notes, and troubleshooting cookbook. Bilingual EN + ID.
+
 ## [1.8.0] - 2026-05-25
 
 ### Changed
@@ -26,7 +75,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Smoke + parity test scripts that verify the assembled artifact retains
   every contract of the original single-file version.
 - GitHub Actions: `ci.yml` (build, lint, test on every PR) and `release.yml`
-  (publishes `dist/gc-chkr.sh`, `dist/gc-chkr`, and `SHA256SUMS` on tag push).
+  (publishes `dist/gc-hc.sh`, `dist/gc-hc`, and `SHA256SUMS` on tag push).
 - `--no-color` flag for the installer.
 - `.shellcheckrc`, `.editorconfig`, `.pre-commit-config.yaml`, `.gitattributes`.
 
@@ -44,8 +93,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   optional Fleet Management endpoint, plus DNS/TLS sanity checks.
 - Ships a systemd timer for periodic execution.
 - Provides `standalone` mode for hosts without `apt`.
-- `gc-chkr` and `gchk` aliases.
+- `gc-hc` and `gchc` aliases.
 
-[Unreleased]: https://github.com/naufalmng/gc-chkr/compare/v1.8.0...HEAD
-[1.8.0]: https://github.com/naufalmng/gc-chkr/releases/tag/v1.8.0
-[1.7.0]: https://github.com/naufalmng/gc-chkr/releases/tag/v1.7.0
+[Unreleased]: https://github.com/naufalmng/gc-hc/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/naufalmng/gc-hc/releases/tag/v2.0.0
+[1.8.0]: https://github.com/naufalmng/gc-hc/releases/tag/v1.8.0
+[1.7.0]: https://github.com/naufalmng/gc-hc/releases/tag/v1.7.0

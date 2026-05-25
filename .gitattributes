@@ -9,8 +9,8 @@
 Makefile     text eol=lf
 *.service    text eol=lf
 *.timer      text eol=lf
-gc-chkr      text eol=lf
-gc-chkr.sh   text eol=lf
+gc-hc      text eol=lf
+gc-hc.sh   text eol=lf
 
 # Binary - never normalize
 *.png        binary

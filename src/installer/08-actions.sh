@@ -44,16 +44,16 @@ install_package() {
   step 4 4 "Done"
   cat <<EOF
 
-${C_GREEN}${C_BOLD}gc-chkr installed successfully.${C_RESET}
+${C_GREEN}${C_BOLD}gc-hc installed successfully.${C_RESET}
 
-  Main command:   ${C_BOLD}gc-chkr help${C_RESET}
-  Short command:  ${C_BOLD}gchk help${C_RESET}
+  Main command:   ${C_BOLD}gc-hc help${C_RESET}
+  Short command:  ${C_BOLD}gchc help${C_RESET}
 
   Next step:
-    ${C_BOLD}sudo gc-chkr onboard${C_RESET}
+    ${C_BOLD}sudo gc-hc onboard${C_RESET}
 
   Remove:
-    sudo apt-get remove gc-chkr
+    sudo apt-get remove gc-hc
 EOF
 }
 
@@ -78,7 +78,7 @@ uninstall_package() {
 }
 
 standalone() {
-  local target="${PWD}/gc-chkr"
+  local target="${PWD}/gc-hc"
 
   LAST_STEP="standalone"
   need_cmd chmod
@@ -101,13 +101,13 @@ standalone() {
 
   cat <<EOF
 
-${C_GREEN}${C_BOLD}Standalone gc-chkr created successfully.${C_RESET}
+${C_GREEN}${C_BOLD}Standalone gc-hc created successfully.${C_RESET}
 
   Binary:
     ${target}
 
   Next:
-    ./gc-chkr config
-    ./gc-chkr check
+    ./gc-hc config
+    ./gc-hc check
 EOF
 }

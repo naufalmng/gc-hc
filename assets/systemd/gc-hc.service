@@ -5,12 +5,12 @@ After=network-online.target
 
 [Service]
 Type=oneshot
-EnvironmentFile=-/etc/gc-chkr/env
-ExecStart=/usr/bin/gc-chkr check --quiet
+EnvironmentFile=-/etc/gc-hc/env
+ExecStart=/usr/bin/gc-hc check --quiet
 User=root
 Group=root
 NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=full
 ProtectHome=true
-ReadWritePaths=/var/lib/gc-chkr /var/log/gc-chkr
+ReadWritePaths=/var/lib/gc-hc /var/log/gc-hc

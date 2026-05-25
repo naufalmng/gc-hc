@@ -4,7 +4,7 @@ dist/
 *.tar.gz
 
 # Local state when running from repo root
-.gc-chkr/
+.gc-hc/
 
 # Editor & OS noise
 .DS_Store

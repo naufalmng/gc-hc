@@ -10,7 +10,7 @@ installed_version() {
   dpkg-query -W -f='${Version}' "$PACKAGE_NAME" 2>/dev/null || true
 }
 
-# Defensive: if /usr/bin/gchk already exists but isn't owned by *us*, abort.
+# Defensive: if /usr/bin/gchc already exists but isn't owned by *us*, abort.
 # Saves a frustrated user from blowing away an unrelated tool.
 check_short_command_conflict() {
   if [[ ! -e "$SHORT_BIN" ]]; then
@@ -56,23 +56,23 @@ EOF
   cat <<EOF
 
 The following command aliases will be available:
-  ${C_GREEN}gc-chkr${C_RESET}
-  ${C_GREEN}gchk${C_RESET}
+  ${C_GREEN}gc-hc${C_RESET}
+  ${C_GREEN}gchc${C_RESET}
 
 Package files:
-  ${C_DIM}/usr/bin/gc-chkr
-  /usr/bin/gchk
-  /lib/systemd/system/gc-chkr.service
-  /lib/systemd/system/gc-chkr.timer
-  /etc/gc-chkr/
-  /var/lib/gc-chkr/
-  /var/log/gc-chkr/${C_RESET}
+  ${C_DIM}/usr/bin/gc-hc
+  /usr/bin/gchc
+  /lib/systemd/system/gc-hc.service
+  /lib/systemd/system/gc-hc.timer
+  /etc/gc-hc/
+  /var/lib/gc-hc/
+  /var/log/gc-hc/${C_RESET}
 
 Recommended next step after installation:
-  ${C_BOLD}sudo gc-chkr onboard${C_RESET}
+  ${C_BOLD}sudo gc-hc onboard${C_RESET}
 
 To remove:
-  sudo apt-get remove gc-chkr
+  sudo apt-get remove gc-hc
 
 EOF
 }
@@ -88,9 +88,9 @@ The following package will be REMOVED:
   ${C_BOLD}${PACKAGE_NAME}${C_RESET}
 
 The following managed paths will be removed:
-  ${C_DIM}/etc/gc-chkr/
-  /var/lib/gc-chkr/
-  /var/log/gc-chkr/${C_RESET}
+  ${C_DIM}/etc/gc-hc/
+  /var/lib/gc-hc/
+  /var/log/gc-hc/${C_RESET}
 
 EOF
     return 0
@@ -109,13 +109,13 @@ print_standalone_preview() {
 
   cat <<EOF
 The following standalone executable will be created:
-  ${C_BOLD}${PWD}/gc-chkr${C_RESET}
+  ${C_BOLD}${PWD}/gc-hc${C_RESET}
 
 No package will be installed.
 No systemd service/timer will be installed.
 
 Standalone data directory:
-  ${C_DIM}${PWD}/.gc-chkr/${C_RESET}
+  ${C_DIM}${PWD}/.gc-hc/${C_RESET}
 
 EOF
 }

@@ -66,7 +66,7 @@ show_status() {
   last_finished="$(extract_json_value "$RESULT_FILE" "finished")"
 
   printf '\n%s\n' "$separator"
-  printf '  gc-chkr status\n'
+  printf '  gc-hc status\n'
   printf '%s\n' "$separator"
   printf '  %-13s: %s\n' "status"     "$(status_badge "$timer_status")"
   printf '  %-13s: %s\n' "timer"      "$(status_badge "$timer_state")"
@@ -122,7 +122,7 @@ Reading package lists... Done
 Building dependency tree... Done
 Reading state information... Done
 The following package will be REMOVED:
-  gc-chkr
+  gc-hc
 EOF
 
     if ! confirm "Do you want to continue?" "n"; then
@@ -131,11 +131,11 @@ EOF
     fi
 
     if command -v apt-get >/dev/null 2>&1; then
-      exec apt-get remove -y gc-chkr
+      exec apt-get remove -y gc-hc
     fi
 
     if command -v dpkg >/dev/null 2>&1; then
-      exec dpkg -r gc-chkr
+      exec dpkg -r gc-hc
     fi
 
     die "apt-get/dpkg not found"
@@ -160,6 +160,6 @@ EOF
     rm -f "$SELF_PATH"
     ok "standalone binary removed"
   else
-    ok "standalone data removed; use gc-chkr remove --force to remove binary"
+    ok "standalone data removed; use gc-hc remove --force to remove binary"
   fi
 }
