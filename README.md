@@ -20,7 +20,7 @@
 
 ## English
 
-When Grafana Cloud says *"no data"*, the cause is almost always on the node — DNS, TLS, auth, a firewall rule, a typo. `gc-hc` runs from the node and tells you which one in seconds.
+When Grafana Cloud says *"no data"*, everyone starts pointing fingers. `gc-hc` runs from the node and checks the usual suspects — DNS, TLS, auth, firewall rules, and endpoint URLs — so you can stop guessing and start fixing.
 
 ### Install
 
@@ -45,7 +45,7 @@ For full usage, configuration reference, architecture, and design notes, see **[
 
 ## Bahasa Indonesia
 
-Kalau Grafana Cloud bilang *"no data"*, penyebabnya hampir selalu di node — DNS, TLS, auth, firewall, salah ketik URL. `gc-hc` jalan dari node dan langsung kasih tahu masalahnya yang mana, dalam hitungan detik.
+Kalau Grafana Cloud bilang *"no data"*, biasanya semua mulai saling tuduh. `gc-hc` jalan dari sisi node dan ngecek tersangka utama — DNS, TLS, auth, firewall, dan URL endpoint — supaya lo bisa stop nebak-nebak dan mulai benerin masalahnya.
 
 ### Instalasi
 
