@@ -1,0 +1,12 @@
+[Unit]
+Description=Run Grafana Cloud node-side healthcheck
+
+[Timer]
+OnBootSec=1m
+OnCalendar=*:0/5:00
+AccuracySec=30s
+Persistent=true
+Unit=gc-chkr.service
+
+[Install]
+WantedBy=timers.target

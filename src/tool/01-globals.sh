@@ -1,0 +1,34 @@
+# Mutable globals: CLI flags, runtime state, and Grafana Cloud credentials.
+# Defaults are intentionally tolerant; validate_config enforces correctness
+# before any network call.
+
+ACTION="help"
+INTERVAL="5m"
+TIMEOUT="10"
+QUIET="false"
+JSON="false"
+YES="false"
+FORCE="false"
+LAST_STEP="init"
+
+GCLOUD_HOSTED_METRICS_URL="${GCLOUD_HOSTED_METRICS_URL:-}"
+GCLOUD_HOSTED_METRICS_ID="${GCLOUD_HOSTED_METRICS_ID:-}"
+GCLOUD_HOSTED_LOGS_URL="${GCLOUD_HOSTED_LOGS_URL:-}"
+GCLOUD_HOSTED_LOGS_ID="${GCLOUD_HOSTED_LOGS_ID:-}"
+GCLOUD_FM_URL="${GCLOUD_FM_URL:-}"
+GCLOUD_RW_API_KEY="${GCLOUD_RW_API_KEY:-}"
+
+GC_CHKR_TIMEOUT="${GC_CHKR_TIMEOUT:-10}"
+GC_CHKR_RETRIES="${GC_CHKR_RETRIES:-2}"
+GC_CHKR_RETRY_DELAY="${GC_CHKR_RETRY_DELAY:-2}"
+GC_CHKR_DNS="${GC_CHKR_DNS:-true}"
+GC_CHKR_TLS="${GC_CHKR_TLS:-true}"
+GC_CHKR_LOKI_WRITE="${GC_CHKR_LOKI_WRITE:-true}"
+GC_CHKR_PROM_QUERY="${GC_CHKR_PROM_QUERY:-true}"
+GC_CHKR_FLEET="${GC_CHKR_FLEET:-true}"
+
+CHECKS=()
+PASS=0
+WARN=0
+FAIL=0
+SKIP=0

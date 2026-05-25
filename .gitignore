@@ -1,0 +1,23 @@
+# Build artifacts
+dist/
+*.deb
+*.tar.gz
+
+# Local state when running from repo root
+.gc-chkr/
+
+# Editor & OS noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~
+
+# Test artifacts
+.bats-tmp/
+
+# Direnv / local env (never commit secrets)
+.envrc
+.env
+.env.local
