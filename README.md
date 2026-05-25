@@ -1,3 +1,9 @@
+     ▄████   ▄████        ██   ██  ▄████
+    ██       ██           ██   ██ ██
+    ██  ▄▄   ██           ███████ ██
+    ██  ██   ██           ██   ██ ██
+     ▀████    ▀████  ▄    ██   ██  ▀████
+
 # gc-hc
 
 **Grafana Cloud Health Checker** — node-side healthcheck CLI for diagnosing why metrics or logs aren't reaching Grafana Cloud.
