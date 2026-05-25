@@ -8,21 +8,18 @@ set -e
 ROOT="$(cd -- "$(dirname -- "$0")/.." >/dev/null && pwd -P)"
 cd "$ROOT"
 
-# Sourcing modules requires their dependencies; provide minimal stubs.
-die()  { printf 'DIE: %s\n'  "$1" >&2; return 1; }
-warn() { printf 'WARN: %s\n' "$1" >&2; }
+# 04-utils.sh defines die/warn — we override them after sourcing so failures
+# return rather than exit, keeping the test runner alive across assertions.
 
 # shellcheck disable=SC1091
 source src/tool/04-utils.sh
-
-# 04-utils.sh re-defines die/warn — restore stubs.
-die()  { printf 'DIE: %s\n'  "$1" >&2; return 1; }
-warn() { printf 'WARN: %s\n' "$1" >&2; }
-
 # shellcheck disable=SC1091
 source src/tool/07-validate.sh
 # shellcheck disable=SC1091
 source src/tool/09-url.sh
+
+die()  { printf 'die: %s\n'  "$1" >&2; return 1; }
+warn() { printf 'warn: %s\n' "$1" >&2; }
 
 PASS=0
 FAIL=0
@@ -34,6 +31,30 @@ assert_eq() {
   else
     printf '  FAIL  %s\n        want: %q\n        got : %q\n' "$name" "$exp" "$got"
     FAIL=$((FAIL+1))
+  fi
+}
+
+# Run a command; assert it exits zero.
+assert_ok() {
+  local name="$1"; shift
+  if "$@" 2>/dev/null; then
+    printf '  ok    %s\n' "$name"
+    PASS=$((PASS+1))
+  else
+    printf '  FAIL  %s\n' "$name"
+    FAIL=$((FAIL+1))
+  fi
+}
+
+# Run a command; assert it exits non-zero.
+assert_fail() {
+  local name="$1"; shift
+  if "$@" 2>/dev/null; then
+    printf '  FAIL  %s (expected failure)\n' "$name"
+    FAIL=$((FAIL+1))
+  else
+    printf '  ok    %s\n' "$name"
+    PASS=$((PASS+1))
   fi
 }
 
@@ -58,18 +79,18 @@ assert_eq "*-*-* 0/1:00:00" "$(calendar_from_interval 1h)"  "1h"
 assert_eq "*:*:0/30"        "$(calendar_from_interval 30s)" "30s"
 
 echo "valid_url:"
-valid_url   "TEST" "https://ok.example.com/path" 2>/dev/null && { echo "  ok    accepts https";  PASS=$((PASS+1)); } || { echo "  FAIL  accepts https"; FAIL=$((FAIL+1)); }
-! valid_url "TEST" "http://insecure.com"         2>/dev/null && { echo "  ok    rejects http";   PASS=$((PASS+1)); } || { echo "  FAIL  rejects http"; FAIL=$((FAIL+1)); }
-! valid_url "TEST" ""                            2>/dev/null && { echo "  ok    rejects empty";  PASS=$((PASS+1)); } || { echo "  FAIL  rejects empty"; FAIL=$((FAIL+1)); }
-! valid_url "TEST" "https://has spaces.com"      2>/dev/null && { echo "  ok    rejects ws";     PASS=$((PASS+1)); } || { echo "  FAIL  rejects ws"; FAIL=$((FAIL+1)); }
+assert_ok   "accepts https"        valid_url "TEST" "https://ok.example.com/path"
+assert_fail "rejects http"         valid_url "TEST" "http://insecure.com"
+assert_fail "rejects empty"        valid_url "TEST" ""
+assert_fail "rejects whitespace"   valid_url "TEST" "https://has spaces.com"
 
 echo "valid_id:"
-valid_id   "TEST" "12345" 2>/dev/null && { echo "  ok    accepts numeric";  PASS=$((PASS+1)); } || { echo "  FAIL"; FAIL=$((FAIL+1)); }
-! valid_id "TEST" "abc"   2>/dev/null && { echo "  ok    rejects letters";  PASS=$((PASS+1)); } || { echo "  FAIL"; FAIL=$((FAIL+1)); }
+assert_ok   "accepts numeric"      valid_id "TEST" "12345"
+assert_fail "rejects letters"      valid_id "TEST" "abc"
 
 echo "valid_key:"
-valid_key   "glc_eyJvIjoiMTIzNDU2In0=" 2>/dev/null && { echo "  ok    accepts glc_";  PASS=$((PASS+1)); } || { echo "  FAIL"; FAIL=$((FAIL+1)); }
-! valid_key "wrong_prefix"             2>/dev/null && { echo "  ok    rejects other"; PASS=$((PASS+1)); } || { echo "  FAIL"; FAIL=$((FAIL+1)); }
+assert_ok   "accepts glc_ prefix"  valid_key "glc_eyJvIjoiMTIzNDU2In0="
+assert_fail "rejects bad prefix"   valid_key "wrong_prefix"
 
 echo "json_escape:"
 assert_eq 'hello \"world\"'   "$(json_escape 'hello "world"')"               "double quotes"

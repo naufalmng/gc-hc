@@ -18,7 +18,7 @@ SRC_INSTALLER="${ROOT}/src/installer"
 ASSETS="${ROOT}/assets"
 DIST="${ROOT}/dist"
 
-VERSION="$(cat "${ROOT}/VERSION" | tr -d '[:space:]')"
+VERSION="$(tr -d '[:space:]' < "${ROOT}/VERSION")"
 MAINTAINER="${PACKAGE_MAINTAINER:-Muhammad Naufal Hanif <naufalmng@gmail.com>}"
 HOMEPAGE="${PACKAGE_HOMEPAGE:-https://github.com/naufalmng/gc-chkr}"
 
