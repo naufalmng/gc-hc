@@ -69,6 +69,7 @@ prompt_value() {
 
     if [[ -n "$input" ]]; then
       printf -v "$var" '%s' "$input"
+      # shellcheck disable=SC2163  # we genuinely want indirect export here
       export "$var"
       return 0
     fi

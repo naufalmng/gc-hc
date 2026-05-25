@@ -23,13 +23,20 @@ jobs:
 
       - name: Lint with shellcheck
         run: |
-          shellcheck -x \
+          # -s bash: source modules deliberately have no shebang (they are
+          #   concatenated by scripts/build.sh into a single bash script).
+          # -x:     follow `source` directives across files.
+          shellcheck -s bash -x \
             src/tool/*.sh \
-            src/installer/*.sh \
-            scripts/*.sh \
+            src/installer/*.sh
+          # Maintainer scripts are /bin/sh — let shellcheck infer.
+          shellcheck \
             assets/debian/postinst \
             assets/debian/prerm \
-            assets/debian/postrm \
+            assets/debian/postrm
+          # Standalone scripts have shebangs — default detection is fine.
+          shellcheck \
+            scripts/*.sh \
             tests/smoke.sh \
             tests/parity.sh
 
