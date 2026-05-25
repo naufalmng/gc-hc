@@ -20,7 +20,7 @@ jobs:
       - name: Compute checksums
         working-directory: dist
         run: |
-          sha256sum gc-chkr.sh gc-chkr > SHA256SUMS
+          sha256sum gc-hc.sh gc-hc > SHA256SUMS
           cat SHA256SUMS
 
       - name: Extract changelog section
@@ -45,9 +45,9 @@ jobs:
       - name: Publish release
         uses: softprops/action-gh-release@v2
         with:
-          name: gc-chkr ${{ github.ref_name }}
+          name: gc-hc ${{ github.ref_name }}
           body: ${{ steps.changelog.outputs.notes }}
           files: |
-            dist/gc-chkr.sh
-            dist/gc-chkr
+            dist/gc-hc.sh
+            dist/gc-hc
             dist/SHA256SUMS

@@ -20,14 +20,14 @@ build_deb() {
   install -d -m 0755 "$debian_dir"
   install -d -m 0755 "${pkg_dir}/usr/bin"
   install -d -m 0755 "${pkg_dir}${SYSTEMD_DIR}"
-  install -d -m 0750 "${pkg_dir}/etc/gc-chkr"
-  install -d -m 0750 "${pkg_dir}/var/lib/gc-chkr"
-  install -d -m 0750 "${pkg_dir}/var/log/gc-chkr"
+  install -d -m 0750 "${pkg_dir}/etc/gc-hc"
+  install -d -m 0750 "${pkg_dir}/var/lib/gc-hc"
+  install -d -m 0750 "${pkg_dir}/var/log/gc-hc"
 
   write_tool              "${pkg_dir}${MAIN_BIN}"
   write_short_wrapper     "${pkg_dir}${SHORT_BIN}"
-  write_service_file      "${pkg_dir}${SYSTEMD_DIR}/gc-chkr.service"
-  write_timer_file        "${pkg_dir}${SYSTEMD_DIR}/gc-chkr.timer"
+  write_service_file      "${pkg_dir}${SYSTEMD_DIR}/gc-hc.service"
+  write_timer_file        "${pkg_dir}${SYSTEMD_DIR}/gc-hc.timer"
   write_maintainer_scripts "$debian_dir"
 
   cat > "${debian_dir}/control" <<EOF

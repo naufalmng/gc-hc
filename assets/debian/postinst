@@ -1,11 +1,11 @@
 #!/bin/sh
 set -e
 
-printf '[INFO] gc-chkr package installed\n'
-printf '[INFO] Main command : gc-chkr\n'
-printf '[INFO] Short command: gchk\n'
-printf '[INFO] Next step    : sudo gc-chkr onboard\n'
-printf '[INFO] Remove with  : sudo apt-get remove gc-chkr\n'
+printf '[INFO] gc-hc package installed\n'
+printf '[INFO] Main command : gc-hc\n'
+printf '[INFO] Short command: gchc\n'
+printf '[INFO] Next step    : sudo gc-hc onboard\n'
+printf '[INFO] Remove with  : sudo apt-get remove gc-hc\n'
 
 if command -v systemctl >/dev/null 2>&1; then
   systemctl daemon-reload >/dev/null 2>&1 || true

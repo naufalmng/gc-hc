@@ -3,7 +3,7 @@
 
 usage() {
   cat <<EOF
-${C_BOLD}gc-chkr installer${C_RESET}  ${C_DIM}v${PACKAGE_VERSION}${C_RESET}
+${C_BOLD}gc-hc installer${C_RESET}  ${C_DIM}v${PACKAGE_VERSION}${C_RESET}
 
 ${C_BOLD}Usage:${C_RESET}
   sudo bash ${0##*/} install
@@ -18,16 +18,16 @@ ${C_BOLD}Options:${C_RESET}
   -h, --help         show help
 
 ${C_BOLD}Pipe examples:${C_RESET}
-  curl -fsSL ${PACKAGE_HOMEPAGE}/releases/latest/download/gc-chkr.sh | sudo bash
-  curl -fsSL ${PACKAGE_HOMEPAGE}/releases/latest/download/gc-chkr.sh | sudo bash -s -- install
-  curl -fsSL ${PACKAGE_HOMEPAGE}/releases/latest/download/gc-chkr.sh | sudo bash -s -- install --yes
-  curl -fsSL ${PACKAGE_HOMEPAGE}/releases/latest/download/gc-chkr.sh | bash -s -- standalone
+  curl -fsSL ${PACKAGE_HOMEPAGE}/releases/latest/download/gc-hc.sh | sudo bash
+  curl -fsSL ${PACKAGE_HOMEPAGE}/releases/latest/download/gc-hc.sh | sudo bash -s -- install
+  curl -fsSL ${PACKAGE_HOMEPAGE}/releases/latest/download/gc-hc.sh | sudo bash -s -- install --yes
+  curl -fsSL ${PACKAGE_HOMEPAGE}/releases/latest/download/gc-hc.sh | bash -s -- standalone
 
 ${C_BOLD}After install:${C_RESET}
-  sudo gc-chkr onboard
-  gc-chkr status
-  gchk check
-  sudo apt-get remove gc-chkr
+  sudo gc-hc onboard
+  gc-hc status
+  gchc check
+  sudo apt-get remove gc-hc
 EOF
 }
 

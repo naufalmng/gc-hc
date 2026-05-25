@@ -3,8 +3,8 @@
 # scripts/build.sh — assemble dist artifacts from src/ + assets/.
 #
 # Outputs:
-#   dist/gc-chkr.sh    self-contained installer (this is the curl-pipe target)
-#   dist/gc-chkr       standalone runtime tool (drop-in /usr/local/bin)
+#   dist/gc-hc.sh    self-contained installer (this is the curl-pipe target)
+#   dist/gc-hc       standalone runtime tool (drop-in /usr/local/bin)
 #
 # The installer embeds the tool runtime + systemd units + dpkg maintainer
 # scripts via heredoc placeholders. Placeholder substitution is done with
@@ -20,7 +20,7 @@ DIST="${ROOT}/dist"
 
 VERSION="$(tr -d '[:space:]' < "${ROOT}/VERSION")"
 MAINTAINER="${PACKAGE_MAINTAINER:-Muhammad Naufal Hanif <naufalmng@gmail.com>}"
-HOMEPAGE="${PACKAGE_HOMEPAGE:-https://github.com/naufalmng/gc-chkr}"
+HOMEPAGE="${PACKAGE_HOMEPAGE:-https://github.com/naufalmng/gc-hc}"
 
 c_blue=''; c_green=''; c_dim=''; c_reset=''
 if [[ -t 1 ]]; then
@@ -90,7 +90,7 @@ main() {
   # ---- 1. Build the runtime tool first --------------------------------
   step "assembling tool runtime from src/tool/"
   local tool_raw="${DIST}/.tool.raw.sh"
-  local tool_out="${DIST}/gc-chkr"
+  local tool_out="${DIST}/gc-hc"
   concat_modules "$SRC_TOOL" > "$tool_raw"
   cp "$tool_raw" "$tool_out"
   substitute_token "__PACKAGE_VERSION__" "$VERSION" "$tool_out"
@@ -100,7 +100,7 @@ main() {
   # ---- 2. Build the installer with everything embedded ----------------
   step "assembling installer from src/installer/"
   local inst_raw="${DIST}/.installer.raw.sh"
-  local inst_out="${DIST}/gc-chkr.sh"
+  local inst_out="${DIST}/gc-hc.sh"
   concat_modules "$SRC_INSTALLER" > "$inst_raw"
 
   step "embedding assets into installer"
@@ -111,8 +111,8 @@ main() {
   # Embed in dependency order. After every embed, mv stage forward.
   local embed_pairs=(
     "__EMBED_TOOL__|${tool_out}"
-    "__EMBED_SERVICE__|${ASSETS}/systemd/gc-chkr.service"
-    "__EMBED_TIMER__|${ASSETS}/systemd/gc-chkr.timer"
+    "__EMBED_SERVICE__|${ASSETS}/systemd/gc-hc.service"
+    "__EMBED_TIMER__|${ASSETS}/systemd/gc-hc.timer"
     "__EMBED_POSTINST__|${ASSETS}/debian/postinst"
     "__EMBED_PRERM__|${ASSETS}/debian/prerm"
     "__EMBED_POSTRM__|${ASSETS}/debian/postrm"
@@ -156,7 +156,7 @@ main() {
   note "version    : ${VERSION}"
   note "maintainer : ${MAINTAINER}"
   note "homepage   : ${HOMEPAGE}"
-  note "artifacts  : ${DIST}/gc-chkr.sh  ${DIST}/gc-chkr"
+  note "artifacts  : ${DIST}/gc-hc.sh  ${DIST}/gc-hc"
 }
 
 main "$@"

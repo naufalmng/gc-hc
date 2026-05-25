@@ -15,10 +15,10 @@ http_code() {
     --silent
     --show-error
     --location
-    --max-time "$GC_CHKR_TIMEOUT"
-    --connect-timeout "$GC_CHKR_TIMEOUT"
-    --retry "$GC_CHKR_RETRIES"
-    --retry-delay "$GC_CHKR_RETRY_DELAY"
+    --max-time "$GC_HC_TIMEOUT"
+    --connect-timeout "$GC_HC_TIMEOUT"
+    --retry "$GC_HC_RETRIES"
+    --retry-delay "$GC_HC_RETRY_DELAY"
     --output /dev/null
     --write-out "%{http_code}"
     --request "$method"

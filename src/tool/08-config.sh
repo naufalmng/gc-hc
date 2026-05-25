@@ -1,5 +1,5 @@
 # Configuration: load, validate, prompt, persist, and display.
-# Falls back to Grafana Alloy's env files when no gc-chkr config exists yet,
+# Falls back to Grafana Alloy's env files when no gc-hc config exists yet,
 # so existing Alloy-instrumented hosts get a smooth onboarding.
 
 source_env() {
@@ -121,14 +121,14 @@ configure() {
     printf "GCLOUD_HOSTED_LOGS_ID='%s'\n"     "$(quote_env "$GCLOUD_HOSTED_LOGS_ID")"
     printf "GCLOUD_RW_API_KEY='%s'\n"         "$(quote_env "$GCLOUD_RW_API_KEY")"
     printf "GCLOUD_FM_URL='%s'\n"             "$(quote_env "${GCLOUD_FM_URL:-}")"
-    printf "GC_CHKR_TIMEOUT='%s'\n"           "$TIMEOUT"
-    printf "GC_CHKR_RETRIES='%s'\n"           "$GC_CHKR_RETRIES"
-    printf "GC_CHKR_RETRY_DELAY='%s'\n"       "$GC_CHKR_RETRY_DELAY"
-    printf "GC_CHKR_DNS='%s'\n"               "$GC_CHKR_DNS"
-    printf "GC_CHKR_TLS='%s'\n"               "$GC_CHKR_TLS"
-    printf "GC_CHKR_LOKI_WRITE='%s'\n"        "$GC_CHKR_LOKI_WRITE"
-    printf "GC_CHKR_PROM_QUERY='%s'\n"        "$GC_CHKR_PROM_QUERY"
-    printf "GC_CHKR_FLEET='%s'\n"             "$GC_CHKR_FLEET"
+    printf "GC_HC_TIMEOUT='%s'\n"           "$TIMEOUT"
+    printf "GC_HC_RETRIES='%s'\n"           "$GC_HC_RETRIES"
+    printf "GC_HC_RETRY_DELAY='%s'\n"       "$GC_HC_RETRY_DELAY"
+    printf "GC_HC_DNS='%s'\n"               "$GC_HC_DNS"
+    printf "GC_HC_TLS='%s'\n"               "$GC_HC_TLS"
+    printf "GC_HC_LOKI_WRITE='%s'\n"        "$GC_HC_LOKI_WRITE"
+    printf "GC_HC_PROM_QUERY='%s'\n"        "$GC_HC_PROM_QUERY"
+    printf "GC_HC_FLEET='%s'\n"             "$GC_HC_FLEET"
   } > "$CONFIG_FILE"
 
   chmod 0600 "$CONFIG_FILE"
@@ -152,12 +152,12 @@ show_config() {
   printf 'GCLOUD_HOSTED_LOGS_ID=%s\n'     "${GCLOUD_HOSTED_LOGS_ID:-}"
   printf 'GCLOUD_FM_URL=%s\n'             "${GCLOUD_FM_URL:-}"
   printf 'GCLOUD_RW_API_KEY=%s\n'         "$(mask "${GCLOUD_RW_API_KEY:-}")"
-  printf 'GC_CHKR_TIMEOUT=%s\n'           "${GC_CHKR_TIMEOUT:-}"
-  printf 'GC_CHKR_RETRIES=%s\n'           "${GC_CHKR_RETRIES:-}"
-  printf 'GC_CHKR_RETRY_DELAY=%s\n'       "${GC_CHKR_RETRY_DELAY:-}"
-  printf 'GC_CHKR_DNS=%s\n'               "${GC_CHKR_DNS:-}"
-  printf 'GC_CHKR_TLS=%s\n'               "${GC_CHKR_TLS:-}"
-  printf 'GC_CHKR_LOKI_WRITE=%s\n'        "${GC_CHKR_LOKI_WRITE:-}"
-  printf 'GC_CHKR_PROM_QUERY=%s\n'        "${GC_CHKR_PROM_QUERY:-}"
-  printf 'GC_CHKR_FLEET=%s\n'             "${GC_CHKR_FLEET:-}"
+  printf 'GC_HC_TIMEOUT=%s\n'           "${GC_HC_TIMEOUT:-}"
+  printf 'GC_HC_RETRIES=%s\n'           "${GC_HC_RETRIES:-}"
+  printf 'GC_HC_RETRY_DELAY=%s\n'       "${GC_HC_RETRY_DELAY:-}"
+  printf 'GC_HC_DNS=%s\n'               "${GC_HC_DNS:-}"
+  printf 'GC_HC_TLS=%s\n'               "${GC_HC_TLS:-}"
+  printf 'GC_HC_LOKI_WRITE=%s\n'        "${GC_HC_LOKI_WRITE:-}"
+  printf 'GC_HC_PROM_QUERY=%s\n'        "${GC_HC_PROM_QUERY:-}"
+  printf 'GC_HC_FLEET=%s\n'             "${GC_HC_FLEET:-}"
 }

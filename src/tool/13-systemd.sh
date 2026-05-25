@@ -38,7 +38,7 @@ enable_timer() {
   need_cmd systemctl
   valid_interval "$INTERVAL"
 
-  if ! confirm "Enable and start gc-chkr.timer now?" "y"; then
+  if ! confirm "Enable and start gc-hc.timer now?" "y"; then
     info "timer enable skipped"
     return 0
   fi

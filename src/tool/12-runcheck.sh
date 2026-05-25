@@ -15,12 +15,12 @@ run_check() {
   need_cmd curl awk sed grep date hostname getent
 
   if ! load_config; then
-    die "config missing, run: gc-chkr config"
+    die "config missing, run: gc-hc config"
     return 1
   fi
 
   validate_config
-  valid_timeout "$GC_CHKR_TIMEOUT"
+  valid_timeout "$GC_HC_TIMEOUT"
 
   CHECKS=()
   PASS=0
@@ -31,7 +31,7 @@ run_check() {
   started="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
   host="$(hostname -f 2>/dev/null || hostname)"
 
-  if [[ "$GC_CHKR_DNS" == "true" ]]; then
+  if [[ "$GC_HC_DNS" == "true" ]]; then
     check_dns "prom" "$GCLOUD_HOSTED_METRICS_URL" || true
     check_dns "loki" "$GCLOUD_HOSTED_LOGS_URL" || true
 
@@ -42,7 +42,7 @@ run_check() {
     record "dns" "skip" "disabled" "" ""
   fi
 
-  if [[ "$GC_CHKR_TLS" == "true" ]]; then
+  if [[ "$GC_HC_TLS" == "true" ]]; then
     check_tls "prom" "$GCLOUD_HOSTED_METRICS_URL" || true
     check_tls "loki" "$GCLOUD_HOSTED_LOGS_URL" || true
 
