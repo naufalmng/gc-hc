@@ -19,7 +19,7 @@ ASSETS="${ROOT}/assets"
 DIST="${ROOT}/dist"
 
 VERSION="$(cat "${ROOT}/VERSION" | tr -d '[:space:]')"
-MAINTAINER="${PACKAGE_MAINTAINER:-Muhammad Naufal Hanif <naufal.hanif@binerteknologi.id>}"
+MAINTAINER="${PACKAGE_MAINTAINER:-Muhammad Naufal Hanif <naufalmng@gmail.com>}"
 HOMEPAGE="${PACKAGE_HOMEPAGE:-https://github.com/naufalmng/gc-chkr}"
 
 c_blue=''; c_green=''; c_dim=''; c_reset=''
