@@ -7,11 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.1] - 2026-05-25
+
+### Fixed
+- Product name spelled correctly as **"Grafana Cloud Health Checker"** (with the trailing "er") in the installer banner, README hero, CHANGELOG, and the GitHub repository description. The 2.0.0 release accidentally rendered it as "Health Check" without the "-er" in three user-facing places.
+
 ## [2.0.0] - 2026-05-25
 
 ### ⚠️ BREAKING CHANGES
 
-The project has been **rebranded from `gc-chkr` to `gc-hc`** (Grafana Cloud Health Check).
+The project has been **rebranded from `gc-chkr` to `gc-hc`** (Grafana Cloud Health Checker).
 Every user-facing identifier changes. There is **no in-place upgrade path** from 1.x —
 remove the old package first, then install 2.0.0 cleanly.
 
@@ -95,7 +100,8 @@ The `GCLOUD_*` variables (URLs, IDs, API key) keep their original names — only
 - Provides `standalone` mode for hosts without `apt`.
 - `gc-hc` and `gchc` aliases.
 
-[Unreleased]: https://github.com/naufalmng/gc-hc/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/naufalmng/gc-hc/compare/v2.0.1...HEAD
+[2.0.1]: https://github.com/naufalmng/gc-hc/releases/tag/v2.0.1
 [2.0.0]: https://github.com/naufalmng/gc-hc/releases/tag/v2.0.0
 [1.8.0]: https://github.com/naufalmng/gc-hc/releases/tag/v1.8.0
 [1.7.0]: https://github.com/naufalmng/gc-hc/releases/tag/v1.7.0

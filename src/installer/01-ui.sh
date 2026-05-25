@@ -32,7 +32,7 @@ print_banner() {
   printf '%s    ██  ██   ██           ██   ██ ██%s\n'      "${C_CYAN}" "${C_RESET}"
   printf '%s     ▀████    ▀████  ▄    ██   ██  ▀████%s\n'  "${C_CYAN}" "${C_RESET}"
   printf '\n'
-  printf '   %sGrafana Cloud Health Check%s   %sv%s%s\n' \
+  printf '   %sGrafana Cloud Health Checker%s   %sv%s%s\n' \
     "${C_BOLD}" "${C_RESET}" "${C_DIM}" "${PACKAGE_VERSION}" "${C_RESET}"
   printf '   %s%s%s\n' "${C_DIM}" "${PACKAGE_HOMEPAGE}" "${C_RESET}"
   printf '\n'
