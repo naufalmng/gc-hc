@@ -53,7 +53,7 @@ Kalau Grafana Cloud bilang *"no data"*, penyebabnya hampir selalu di node — DN
 curl -fsSL https://github.com/naufalmng/gc-hc/releases/latest/download/gc-hc.sh | sudo bash
 ```
 
-### Mulai cepat
+### Quick start
 
 ```bash
 sudo gc-hc onboard       # konfigurasi + aktifkan timer + jalankan check pertama
