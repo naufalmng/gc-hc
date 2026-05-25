@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.0] - 2026-05-25
+
 ### Changed
 - Refactored from a single 1930-line script into a modular source tree under
   `src/tool/` (15 files) and `src/installer/` (9 files), assembled into a
@@ -25,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   every contract of the original single-file version.
 - GitHub Actions: `ci.yml` (build, lint, test on every PR) and `release.yml`
   (publishes `dist/gc-chkr.sh`, `dist/gc-chkr`, and `SHA256SUMS` on tag push).
+- `--no-color` flag for the installer.
 - `.shellcheckrc`, `.editorconfig`, `.pre-commit-config.yaml`, `.gitattributes`.
 
 ### Fixed
@@ -43,5 +46,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Provides `standalone` mode for hosts without `apt`.
 - `gc-chkr` and `gchk` aliases.
 
-[Unreleased]: https://github.com/naufalmng/gc-chkr/compare/v1.7.0...HEAD
+[Unreleased]: https://github.com/naufalmng/gc-chkr/compare/v1.8.0...HEAD
+[1.8.0]: https://github.com/naufalmng/gc-chkr/releases/tag/v1.8.0
 [1.7.0]: https://github.com/naufalmng/gc-chkr/releases/tag/v1.7.0
