@@ -1,0 +1,11 @@
+# https://www.shellcheck.net/wiki/
+
+# Allow sourcing files at runtime that shellcheck cannot resolve statically.
+external-sources=true
+
+# Disable a few advisories that are noisy for this project:
+#   SC2034 - "unused variable" - we declare config defaults that are read via
+#            indirect expansion (`${!var:-}`) which shellcheck can't track.
+#   SC1090 - dynamic source paths in load_config (intentional).
+#   SC2155 - "declare and assign separately" - readable enough as-is.
+disable=SC2034,SC1090,SC2155

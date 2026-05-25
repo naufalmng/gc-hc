@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# tests/bats/test_helper — shared bats setup.
+#
+# Sources only the pure-function modules we want to exercise; provides minimal
+# stubs for log primitives that those modules call.
+
+ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." >/dev/null && pwd -P)"
+
+# Stubs first — modules will not redefine these because we source 04-utils.sh
+# only after, which itself defines die/warn. To keep the test environment
+# clean, we override post-source.
+
+# shellcheck disable=SC1091
+source "${ROOT}/src/tool/04-utils.sh"
+# shellcheck disable=SC1091
+source "${ROOT}/src/tool/07-validate.sh"
+# shellcheck disable=SC1091
+source "${ROOT}/src/tool/09-url.sh"
+
+# Make die/warn return-instead-of-exit so bats `run` keeps working.
+die()  { printf 'die: %s\n' "$1" >&2; return 1; }
+warn() { printf 'warn: %s\n' "$1" >&2; }

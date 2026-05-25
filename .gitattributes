@@ -1,0 +1,18 @@
+# Force LF line endings for all shell scripts and text files.
+# Bash chokes on CRLF (\r in shebang line breaks `env`).
+
+* text=auto eol=lf
+
+*.sh         text eol=lf
+*.bash       text eol=lf
+*.bats       text eol=lf
+Makefile     text eol=lf
+*.service    text eol=lf
+*.timer      text eol=lf
+gc-chkr      text eol=lf
+gc-chkr.sh   text eol=lf
+
+# Binary - never normalize
+*.png        binary
+*.jpg        binary
+*.deb        binary

@@ -1,0 +1,53 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    name: build + publish GitHub release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build dist artifacts
+        run: bash scripts/build.sh
+
+      - name: Compute checksums
+        working-directory: dist
+        run: |
+          sha256sum gc-chkr.sh gc-chkr > SHA256SUMS
+          cat SHA256SUMS
+
+      - name: Extract changelog section
+        id: changelog
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          # Find the section for this version in CHANGELOG.md, if present.
+          notes=$(awk -v v="$version" '
+            $0 ~ "^## \\["v"\\]" { keep=1; next }
+            keep && $0 ~ "^## \\[" { exit }
+            keep { print }
+          ' CHANGELOG.md || true)
+          if [ -z "$notes" ]; then
+            notes="Release $version"
+          fi
+          {
+            echo 'notes<<EOF'
+            echo "$notes"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: gc-chkr ${{ github.ref_name }}
+          body: ${{ steps.changelog.outputs.notes }}
+          files: |
+            dist/gc-chkr.sh
+            dist/gc-chkr
+            dist/SHA256SUMS

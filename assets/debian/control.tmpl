@@ -1,0 +1,12 @@
+Package: __PACKAGE_NAME__
+Version: __PACKAGE_VERSION__
+Section: admin
+Priority: optional
+Architecture: __PACKAGE_ARCH__
+Depends: bash, curl, ca-certificates, systemd
+Maintainer: __PACKAGE_MAINTAINER__
+Homepage: __PACKAGE_HOMEPAGE__
+Description: Grafana Cloud node-side healthcheck with systemd timer
+ A compact Bash healthcheck utility for validating node-side access
+ to Grafana Cloud Prometheus remote_write, Loki push, DNS, TLS,
+ and optional Fleet Management endpoints.
