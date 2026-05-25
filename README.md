@@ -6,7 +6,7 @@
      ▀████    ▀████  ▄    ██   ██  ▀████
 ```
 
-**Grafana Cloud Health Checker** — node-side healthcheck CLI for diagnosing why metrics or logs aren't reaching Grafana Cloud.
+**Grafana Cloud Health Checker** — reverse healthcheck CLI for validating Grafana Cloud reachability from the node-side.
 
 [![CI](https://github.com/naufalmng/gc-hc/actions/workflows/ci.yml/badge.svg)](https://github.com/naufalmng/gc-hc/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/naufalmng/gc-hc?display_name=tag&sort=semver)](https://github.com/naufalmng/gc-hc/releases)
