@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.1] - 2026-05-26
+
+### Changed
+- `gc-hc check` now renders a human-readable result table when stdout is a TTY. The raw JSON document is still written verbatim to the result file and to the rolling log, and is still returned on stdout when `--json` is passed or when stdout is piped/redirected — so existing automation and dashboards keep working untouched.
+- `gc-hc status` removes the redundant `service` row. For a timer-driven unit, the service is `inactive` between runs by design, and the row was duplicating the badge that the `timer` and `last check` rows already carry. The new layout shows `status / timer / last check / interval / next run`.
+
+### Added
+- Timer interval is now a first-class config key. `GC_HC_INTERVAL` (default `5m`) joins the rest of the `GC_HC_*` family — read from the environment, persisted to `/etc/gc-hc/env` (or `.gc-hc/env` in standalone mode) by `gc-hc config`, and surfaced by `gc-hc show-config`. The existing `-i` / `--interval` flag still works and now writes into the same variable.
+- `gc-hc status` shows the active interval as a friendly token, e.g. `interval: 5m  (every 5 minutes)`, so you no longer have to `systemctl cat gc-hc.timer` to check the schedule.
+- `gc-hc help` lists the full set of `GC_HC_*` environment overrides with their defaults.
+
 ## [2.0.1] - 2026-05-25
 
 ### Fixed

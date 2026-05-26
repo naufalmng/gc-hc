@@ -70,18 +70,10 @@ format_result() {
 
 status_badge() {
   local value="${1:-n/a}"
-  local context="${2:-}"
 
   case "$value" in
     enabled|active|pass)  printf '✓ %s' "$value" ;;
-    inactive)
-      if [[ "$context" == "service" ]]; then
-        printf '· %s (idle, timer-triggered)' "$value"
-      else
-        printf '✗ %s' "$value"
-      fi
-      ;;
-    disabled|failed|fail) printf '✗ %s' "$value" ;;
+    disabled|failed|fail|inactive) printf '✗ %s' "$value" ;;
     warn|warning)         printf '! %s' "$value" ;;
     *)                    printf '%s'   "$value" ;;
   esac
@@ -90,11 +82,11 @@ status_badge() {
 show_status() {
   local timer_state="n/a"
   local timer_status="n/a"
-  local service_state="n/a"
   local last_overall="n/a"
   local last_started="n/a"
   local last_finished="n/a"
   local next_run="n/a"
+  local interval_display="n/a"
   local separator="────────────────────────────────────────────────────────"
 
   load_config || true
@@ -102,14 +94,19 @@ show_status() {
   if [[ "$MODE" == "system" ]] && command -v systemctl >/dev/null 2>&1; then
     timer_state="$(systemctl is-active "$TIMER_NAME"  2>/dev/null)" || true
     timer_status="$(systemctl is-enabled "$TIMER_NAME" 2>/dev/null)" || true
-    service_state="$(systemctl is-active "$SERVICE_NAME" 2>/dev/null)" || true
-    : "${timer_state:=inactive}" "${timer_status:=disabled}" "${service_state:=inactive}"
+    : "${timer_state:=inactive}" "${timer_status:=disabled}"
 
     if systemctl list-timers "$TIMER_NAME" --no-legend --no-pager >/dev/null 2>&1; then
       next_run="$(systemctl list-timers "$TIMER_NAME" --no-legend --no-pager 2>/dev/null | awk 'NF {print $1" "$2" "$3" "$4; exit}')"
       next_run="$(trim "$next_run")"
       [[ -n "$next_run" ]] || next_run="n/a"
     fi
+  fi
+
+  # Interval source of truth: prefer the persisted/active value, otherwise the
+  # in-memory default. Show both raw token and a friendlier expansion.
+  if [[ -n "${GC_HC_INTERVAL:-}" ]]; then
+    interval_display="$(format_interval "$GC_HC_INTERVAL")"
   fi
 
   last_overall="$(extract_json_value "$RESULT_FILE" "overall")"
@@ -121,8 +118,8 @@ show_status() {
   printf '%s\n' "$separator"
   printf '  %-13s: %s\n' "status"     "$(status_badge "$timer_status")"
   printf '  %-13s: %s\n' "timer"      "$(status_badge "$timer_state")"
-  printf '  %-13s: %s\n' "service"    "$(status_badge "$service_state" "service")"
   printf '  %-13s: %s\n' "last check" "$(status_badge "$last_overall")"
+  printf '  %-13s: %s\n' "interval"   "$interval_display"
   printf '  %-13s: %s\n' "next run"   "$next_run"
   printf '%s\n' "$separator"
   printf '  %-13s: %s %s\n' "tool"   "$APP" "$VERSION"

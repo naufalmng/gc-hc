@@ -35,7 +35,9 @@ Long option style:
 
 Options:
   -i, --interval 5m             timer interval: 1m, 5m, 15m, 1h
+                                also via env: GC_HC_INTERVAL
   -t, --timeout 10              curl timeout seconds
+                                also via env: GC_HC_TIMEOUT
   -q, --quiet                   less output
   -y, --yes                     assume yes
   -f, --force                   overwrite/remove where relevant
@@ -45,6 +47,16 @@ Options:
   --no-loki-write               skip Loki write check
   --no-prom-query               skip Prometheus query check
   --no-fleet                    skip Fleet check
+
+Environment overrides (also set via gc-hc config):
+  GC_HC_INTERVAL    timer interval (1m, 5m, 15m, 1h)  default: 5m
+  GC_HC_TIMEOUT     curl timeout seconds              default: 10
+  GC_HC_RETRIES     retry count per probe             default: 2
+  GC_HC_DNS         enable DNS check                  default: true
+  GC_HC_TLS         enable TLS check                  default: true
+  GC_HC_LOKI_WRITE  enable Loki write check           default: true
+  GC_HC_PROM_QUERY  enable Prometheus query check     default: true
+  GC_HC_FLEET       enable Fleet check                default: true
 EOF
 }
 
@@ -83,7 +95,7 @@ parse_args() {
           die "--interval needs value"
           return 1
         fi
-        INTERVAL="$2"
+        GC_HC_INTERVAL="$2"
         shift 2
         ;;
       -t|--timeout)

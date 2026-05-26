@@ -124,6 +124,7 @@ Configured via `/etc/gc-hc/env` (system mode) or `./.gc-hc/env` (standalone). Th
 | `GCLOUD_HOSTED_LOGS_ID`          | yes      | Numeric Loki instance ID                                |
 | `GCLOUD_RW_API_KEY`              | yes      | Grafana Cloud API key (must start with `glc_`)          |
 | `GCLOUD_FM_URL`                  | optional | Fleet Management endpoint                               |
+| `GC_HC_INTERVAL`                 | optional | Timer interval (1m, 5m, 15m, 1h; default `5m`)          |
 | `GC_HC_TIMEOUT`                  | optional | curl timeout, seconds (1–300, default 10)               |
 | `GC_HC_RETRIES`                  | optional | curl retries (default 2)                                |
 | `GC_HC_RETRY_DELAY`              | optional | curl retry delay, seconds (default 2)                   |
@@ -350,6 +351,7 @@ Disimpan di `/etc/gc-hc/env` (system mode) atau `./.gc-hc/env` (standalone). Flo
 | `GCLOUD_HOSTED_LOGS_ID`          | ya       | Numeric Loki instance ID                                |
 | `GCLOUD_RW_API_KEY`              | ya       | Grafana Cloud API key (harus mulai dengan `glc_`)       |
 | `GCLOUD_FM_URL`                  | opsional | Fleet Management endpoint                               |
+| `GC_HC_INTERVAL`                 | opsional | Interval timer (1m, 5m, 15m, 1h; default `5m`)          |
 | `GC_HC_TIMEOUT`                  | opsional | Timeout curl, detik (1–300, default 10)                 |
 | `GC_HC_RETRIES`                  | opsional | Curl retries (default 2)                                |
 | `GC_HC_RETRY_DELAY`              | opsional | Curl retry delay, detik (default 2)                     |

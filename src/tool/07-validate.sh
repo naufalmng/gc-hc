@@ -34,6 +34,39 @@ calendar_from_interval() {
   esac
 }
 
+# Render `5m` / `30s` / `1h` as a friendly token: "5m  (every 5 minutes)".
+# Falls back to the raw token if the format is unrecognised.
+format_interval() {
+  local value="${1:-}"
+  local number="${value%?}"
+  local unit="${value: -1}"
+  local label=""
+
+  if [[ -z "$value" ]]; then
+    printf 'n/a'
+    return 0
+  fi
+
+  if [[ ! "$value" =~ ^[0-9]+[smhd]$ ]]; then
+    printf '%s' "$value"
+    return 0
+  fi
+
+  case "$unit" in
+    s) label="second" ;;
+    m) label="minute" ;;
+    h) label="hour" ;;
+    d) label="day" ;;
+    *) printf '%s' "$value"; return 0 ;;
+  esac
+
+  if (( number != 1 )); then
+    label="${label}s"
+  fi
+
+  printf '%s  (every %s %s)' "$value" "$number" "$label"
+}
+
 valid_url() {
   local key="${1:?missing key}"
   local value="${2:-}"

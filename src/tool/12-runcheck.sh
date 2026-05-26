@@ -94,7 +94,14 @@ run_check() {
   printf '%s' "$result" >> "$LOG_FILE"
   chmod 0640 "$RESULT_FILE" "$LOG_FILE" 2>/dev/null || true
 
-  printf '%s' "$result"
+  # Output mode:
+  #   --json or non-TTY (piped/redirected) → raw JSON (machine-readable)
+  #   TTY interactive                       → human-readable table
+  if [[ "$JSON" == "true" ]] || [[ ! -t 1 ]]; then
+    printf '%s' "$result"
+  else
+    format_result "$RESULT_FILE"
+  fi
 
   case "$overall" in
     pass) return 0 ;;

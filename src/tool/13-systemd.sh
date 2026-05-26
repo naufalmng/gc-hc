@@ -10,9 +10,9 @@ write_timer_override() {
   fi
 
   need_root
-  valid_interval "$INTERVAL"
+  valid_interval "$GC_HC_INTERVAL"
 
-  calendar="$(calendar_from_interval "$INTERVAL")"
+  calendar="$(calendar_from_interval "$GC_HC_INTERVAL")"
 
   install -d -m 0755 "$TIMER_OVERRIDE_DIR"
 
@@ -36,7 +36,7 @@ enable_timer() {
 
   need_root
   need_cmd systemctl
-  valid_interval "$INTERVAL"
+  valid_interval "$GC_HC_INTERVAL"
 
   if ! confirm "Enable and start gc-hc.timer now?" "y"; then
     info "timer enable skipped"
