@@ -26,14 +26,64 @@ extract_json_value() {
   printf '%s' "$value"
 }
 
+format_result() {
+  local file="${1:?missing file}"
+  local overall started finished
+  local pass=0 warn=0 fail=0 skip=0
+  local name state msg line
+
+  overall="$(extract_json_value "$file" "overall")"
+  started="$(extract_json_value "$file" "started")"
+  finished="$(extract_json_value "$file" "finished")"
+
+  pass="$(sed -n 's/.*"pass":\([0-9]*\).*/\1/p' "$file" | head -n 1)"
+  warn="$(sed -n 's/.*"warn":\([0-9]*\).*/\1/p' "$file" | head -n 1)"
+  fail="$(sed -n 's/.*"fail":\([0-9]*\).*/\1/p' "$file" | head -n 1)"
+  skip="$(sed -n 's/.*"skip":\([0-9]*\).*/\1/p' "$file" | head -n 1)"
+  : "${pass:=0}" "${warn:=0}" "${fail:=0}" "${skip:=0}"
+
+  printf '  %s  overall: %s  (pass:%s warn:%s fail:%s skip:%s)\n' \
+    "$(status_badge "$overall")" "$overall" "$pass" "$warn" "$fail" "$skip"
+  printf '  ran: %s → %s\n\n' "$started" "$finished"
+
+  printf '  %-16s %-6s %s\n' "CHECK" "STATE" "MESSAGE"
+  printf '  %-16s %-6s %s\n' "────────────────" "──────" "────────────────────────────"
+
+  while IFS= read -r line; do
+    name="$(printf '%s' "$line" | sed -n 's/.*"name":"\([^"]*\)".*/\1/p')"
+    state="$(printf '%s' "$line" | sed -n 's/.*"state":"\([^"]*\)".*/\1/p')"
+    msg="$(printf '%s' "$line" | sed -n 's/.*"msg":"\([^"]*\)".*/\1/p')"
+    [[ -n "$name" ]] || continue
+
+    local badge
+    case "$state" in
+      pass) badge="✓" ;;
+      fail) badge="✗" ;;
+      warn) badge="!" ;;
+      skip) badge="–" ;;
+      *)    badge=" " ;;
+    esac
+
+    printf '  %s %-14s %-6s %s\n' "$badge" "$name" "$state" "$msg"
+  done < <(grep -o '{"name":"[^}]*}' "$file")
+}
+
 status_badge() {
   local value="${1:-n/a}"
+  local context="${2:-}"
 
   case "$value" in
-    enabled|active|pass)            printf '✓ %s' "$value" ;;
-    disabled|inactive|failed|fail)  printf '✗ %s' "$value" ;;
-    warn|warning)                   printf '! %s' "$value" ;;
-    *)                              printf '%s'   "$value" ;;
+    enabled|active|pass)  printf '✓ %s' "$value" ;;
+    inactive)
+      if [[ "$context" == "service" ]]; then
+        printf '· %s (idle, timer-triggered)' "$value"
+      else
+        printf '✗ %s' "$value"
+      fi
+      ;;
+    disabled|failed|fail) printf '✗ %s' "$value" ;;
+    warn|warning)         printf '! %s' "$value" ;;
+    *)                    printf '%s'   "$value" ;;
   esac
 }
 
@@ -70,7 +120,7 @@ show_status() {
   printf '%s\n' "$separator"
   printf '  %-13s: %s\n' "status"     "$(status_badge "$timer_status")"
   printf '  %-13s: %s\n' "timer"      "$(status_badge "$timer_state")"
-  printf '  %-13s: %s\n' "service"    "$(status_badge "$service_state")"
+  printf '  %-13s: %s\n' "service"    "$(status_badge "$service_state" "service")"
   printf '  %-13s: %s\n' "last check" "$(status_badge "$last_overall")"
   printf '  %-13s: %s\n' "next run"   "$next_run"
   printf '%s\n' "$separator"
@@ -91,8 +141,8 @@ show_status() {
   printf '%s\n\n' "$separator"
 
   if [[ -s "$RESULT_FILE" ]]; then
-    printf 'last result:\n'
-    cat "$RESULT_FILE"
+    printf '  last result:\n'
+    format_result "$RESULT_FILE"
     printf '\n'
   fi
 }
