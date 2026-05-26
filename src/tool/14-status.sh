@@ -100,9 +100,10 @@ show_status() {
   load_config || true
 
   if [[ "$MODE" == "system" ]] && command -v systemctl >/dev/null 2>&1; then
-    timer_state="$(systemctl is-active "$TIMER_NAME"  2>/dev/null || printf 'inactive')"
-    timer_status="$(systemctl is-enabled "$TIMER_NAME" 2>/dev/null || printf 'disabled')"
-    service_state="$(systemctl is-active "$SERVICE_NAME" 2>/dev/null || printf 'inactive')"
+    timer_state="$(systemctl is-active "$TIMER_NAME"  2>/dev/null)" || true
+    timer_status="$(systemctl is-enabled "$TIMER_NAME" 2>/dev/null)" || true
+    service_state="$(systemctl is-active "$SERVICE_NAME" 2>/dev/null)" || true
+    : "${timer_state:=inactive}" "${timer_status:=disabled}" "${service_state:=inactive}"
 
     if systemctl list-timers "$TIMER_NAME" --no-legend --no-pager >/dev/null 2>&1; then
       next_run="$(systemctl list-timers "$TIMER_NAME" --no-legend --no-pager 2>/dev/null | awk 'NF {print $1" "$2" "$3" "$4; exit}')"
