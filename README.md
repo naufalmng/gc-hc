@@ -1,10 +1,9 @@
-```
+
      ▄████   ▄████        ██   ██  ▄████
     ██       ██           ██   ██ ██
     ██  ▄▄   ██           ███████ ██
     ██  ██   ██           ██   ██ ██
      ▀████    ▀████  ▄    ██   ██  ▀████
-```
 
 **Grafana Cloud Health Checker** — reverse healthcheck CLI for validating Grafana Cloud reachability from the node-side.
 
