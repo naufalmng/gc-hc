@@ -32,31 +32,78 @@ run_check() {
   host="$(hostname -f 2>/dev/null || hostname)"
 
   if [[ "$GC_HC_DNS" == "true" ]]; then
-    check_dns "prom" "$GCLOUD_HOSTED_METRICS_URL" || true
-    check_dns "loki" "$GCLOUD_HOSTED_LOGS_URL" || true
+    if check_dns "prom" "$GCLOUD_HOSTED_METRICS_URL"; then
+      trace_on_success "prom.dns"
+    else
+      trace_on_failure "prom.dns" "$(host_from_url "$GCLOUD_HOSTED_METRICS_URL" 2>/dev/null || printf '%s' "$GCLOUD_HOSTED_METRICS_URL")"
+    fi
+
+    if check_dns "loki" "$GCLOUD_HOSTED_LOGS_URL"; then
+      trace_on_success "loki.dns"
+    else
+      trace_on_failure "loki.dns" "$(host_from_url "$GCLOUD_HOSTED_LOGS_URL" 2>/dev/null || printf '%s' "$GCLOUD_HOSTED_LOGS_URL")"
+    fi
 
     if [[ -n "${GCLOUD_FM_URL:-}" ]]; then
-      check_dns "fleet" "$GCLOUD_FM_URL" || true
+      if check_dns "fleet" "$GCLOUD_FM_URL"; then
+        trace_on_success "fleet.dns"
+      else
+        trace_on_failure "fleet.dns" "$(host_from_url "$GCLOUD_FM_URL" 2>/dev/null || printf '%s' "$GCLOUD_FM_URL")"
+      fi
     fi
   else
     record "dns" "skip" "disabled" "" ""
   fi
 
   if [[ "$GC_HC_TLS" == "true" ]]; then
-    check_tls "prom" "$GCLOUD_HOSTED_METRICS_URL" || true
-    check_tls "loki" "$GCLOUD_HOSTED_LOGS_URL" || true
+    if check_tls "prom" "$GCLOUD_HOSTED_METRICS_URL"; then
+      trace_on_success "prom.tls"
+    else
+      trace_on_failure "prom.tls" "$(host_from_url "$GCLOUD_HOSTED_METRICS_URL" 2>/dev/null || printf '%s' "$GCLOUD_HOSTED_METRICS_URL")"
+    fi
+
+    if check_tls "loki" "$GCLOUD_HOSTED_LOGS_URL"; then
+      trace_on_success "loki.tls"
+    else
+      trace_on_failure "loki.tls" "$(host_from_url "$GCLOUD_HOSTED_LOGS_URL" 2>/dev/null || printf '%s' "$GCLOUD_HOSTED_LOGS_URL")"
+    fi
 
     if [[ -n "${GCLOUD_FM_URL:-}" ]]; then
-      check_tls "fleet" "$GCLOUD_FM_URL" || true
+      if check_tls "fleet" "$GCLOUD_FM_URL"; then
+        trace_on_success "fleet.tls"
+      else
+        trace_on_failure "fleet.tls" "$(host_from_url "$GCLOUD_FM_URL" 2>/dev/null || printf '%s' "$GCLOUD_FM_URL")"
+      fi
     fi
   else
     record "tls" "skip" "disabled" "" ""
   fi
 
-  check_prom_push  || true
-  check_prom_query || true
-  check_loki       || true
-  check_fleet      || true
+  if check_prom_push; then
+    trace_on_success "prom.push"
+  else
+    trace_on_failure "prom.push" "$(host_from_url "$GCLOUD_HOSTED_METRICS_URL" 2>/dev/null || printf '%s' "$GCLOUD_HOSTED_METRICS_URL")"
+  fi
+
+  if check_prom_query; then
+    trace_on_success "prom.query"
+  else
+    trace_on_failure "prom.query" "$(host_from_url "$GCLOUD_HOSTED_METRICS_URL" 2>/dev/null || printf '%s' "$GCLOUD_HOSTED_METRICS_URL")"
+  fi
+
+  if check_loki; then
+    trace_on_success "loki.push"
+  else
+    trace_on_failure "loki.push" "$(host_from_url "$GCLOUD_HOSTED_LOGS_URL" 2>/dev/null || printf '%s' "$GCLOUD_HOSTED_LOGS_URL")"
+  fi
+
+  if check_fleet; then
+    trace_on_success "fleet.api"
+  else
+    if [[ -n "${GCLOUD_FM_URL:-}" ]]; then
+      trace_on_failure "fleet.api" "$(host_from_url "$GCLOUD_FM_URL" 2>/dev/null || printf '%s' "$GCLOUD_FM_URL")"
+    fi
+  fi
 
   # Verdict: any FAIL beats any WARN beats all-PASS.
   if (( FAIL > 0 )); then

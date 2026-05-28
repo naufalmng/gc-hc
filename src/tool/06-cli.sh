@@ -47,6 +47,8 @@ Options:
   --no-loki-write               skip Loki write check
   --no-prom-query               skip Prometheus query check
   --no-fleet                    skip Fleet check
+      --trace                   force traceroute on every probe this run
+      --no-trace                disable traceroute even on failures
 
 Environment overrides (also set via gc-hc config):
   GC_HC_INTERVAL    timer interval (1m, 5m, 15m, 1h)  default: 5m
@@ -57,6 +59,11 @@ Environment overrides (also set via gc-hc config):
   GC_HC_LOKI_WRITE  enable Loki write check           default: true
   GC_HC_PROM_QUERY  enable Prometheus query check     default: true
   GC_HC_FLEET       enable Fleet check                default: true
+  GC_HC_TRACE          auto|always|never              default: auto
+  GC_HC_TRACE_TOOL     auto|traceroute|tracepath      default: auto
+  GC_HC_TRACE_TIMEOUT  per-hop timeout (seconds)      default: 2
+  GC_HC_TRACE_MAX_HOPS abort after N hops             default: 15
+  GC_HC_TRACE_LOG_KEEP last N entries kept per probe  default: 50
 EOF
 }
 
@@ -116,6 +123,8 @@ parse_args() {
       --no-loki-write) GC_HC_LOKI_WRITE="false"; shift ;;
       --no-prom-query) GC_HC_PROM_QUERY="false"; shift ;;
       --no-fleet) GC_HC_FLEET="false"; shift ;;
+      --trace) TRACE_FORCE="true"; GC_HC_TRACE="always"; shift ;;
+      --no-trace) TRACE_FORCE="false"; GC_HC_TRACE="never"; shift ;;
       *)
         die "unknown option: $arg"
         return 1

@@ -130,6 +130,11 @@ configure() {
     printf "GC_HC_LOKI_WRITE='%s'\n"        "$GC_HC_LOKI_WRITE"
     printf "GC_HC_PROM_QUERY='%s'\n"        "$GC_HC_PROM_QUERY"
     printf "GC_HC_FLEET='%s'\n"             "$GC_HC_FLEET"
+    printf "GC_HC_TRACE='%s'\n"          "$GC_HC_TRACE"
+    printf "GC_HC_TRACE_TOOL='%s'\n"     "$GC_HC_TRACE_TOOL"
+    printf "GC_HC_TRACE_TIMEOUT='%s'\n"  "$GC_HC_TRACE_TIMEOUT"
+    printf "GC_HC_TRACE_MAX_HOPS='%s'\n" "$GC_HC_TRACE_MAX_HOPS"
+    printf "GC_HC_TRACE_LOG_KEEP='%s'\n" "$GC_HC_TRACE_LOG_KEEP"
   } > "$CONFIG_FILE"
 
   chmod 0600 "$CONFIG_FILE"
@@ -162,4 +167,9 @@ show_config() {
   printf 'GC_HC_LOKI_WRITE=%s\n'        "${GC_HC_LOKI_WRITE:-}"
   printf 'GC_HC_PROM_QUERY=%s\n'        "${GC_HC_PROM_QUERY:-}"
   printf 'GC_HC_FLEET=%s\n'             "${GC_HC_FLEET:-}"
+  printf 'GC_HC_TRACE=%s\n'          "${GC_HC_TRACE:-}"
+  printf 'GC_HC_TRACE_TOOL=%s\n'     "${GC_HC_TRACE_TOOL:-}"
+  printf 'GC_HC_TRACE_TIMEOUT=%s\n'  "${GC_HC_TRACE_TIMEOUT:-}"
+  printf 'GC_HC_TRACE_MAX_HOPS=%s\n' "${GC_HC_TRACE_MAX_HOPS:-}"
+  printf 'GC_HC_TRACE_LOG_KEEP=%s\n' "${GC_HC_TRACE_LOG_KEEP:-}"
 }
