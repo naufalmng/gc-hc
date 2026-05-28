@@ -66,9 +66,22 @@ for v in GCLOUD_HOSTED_METRICS_URL GCLOUD_HOSTED_METRICS_ID \
          GCLOUD_FM_URL             GCLOUD_RW_API_KEY \
          GC_HC_TIMEOUT GC_HC_RETRIES GC_HC_RETRY_DELAY \
          GC_HC_DNS GC_HC_TLS GC_HC_LOKI_WRITE \
-         GC_HC_PROM_QUERY GC_HC_FLEET; do
+         GC_HC_PROM_QUERY GC_HC_FLEET \
+         GC_HC_TRACE GC_HC_TRACE_TOOL \
+         GC_HC_TRACE_TIMEOUT GC_HC_TRACE_MAX_HOPS \
+         GC_HC_TRACE_LOG_KEEP; do
   assert_in "$TOOL" "$v" "env: $v"
 done
+
+echo
+echo "=== Traceroute CLI flags + dispatch preserved ==="
+assert_in "$TOOL" -- "--trace)"          "flag: --trace"
+assert_in "$TOOL" -- "--no-trace)"       "flag: --no-trace"
+assert_in "$TOOL" "trace_on_failure"     "hook: trace_on_failure"
+assert_in "$TOOL" "trace_on_success"     "hook: trace_on_success"
+assert_in "$TOOL" "trace_pending_failures" "status: trace_pending_failures"
+assert_in "$TOOL" "traceroute"           "tool: traceroute primary"
+assert_in "$TOOL" "tracepath"            "tool: tracepath fallback"
 
 echo
 echo "=== HTTP status branches preserved ==="

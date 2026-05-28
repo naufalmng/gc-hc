@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Auto-traceroute on probe failure. When DNS, TLS, push, query, Loki, or Fleet
+  checks fail, `gc-hc` now fires a single traceroute against the affected host,
+  summarizes the path into the JSON record (`hops=N last=X rtt=Yms`), and
+  appends raw output to a per-probe rolling log under `${LOG_DIR}/trace/`.
+  Suppressed while a failure persists (state-backed backoff); re-arms once the
+  probe recovers, so a 1-hour outage = 1 traceroute, not 12.
+- `--trace` / `--no-trace` flags to force-run or disable traceroute for a single
+  invocation.
+- New env knobs: `GC_HC_TRACE` (auto|always|never), `GC_HC_TRACE_TOOL`
+  (auto|traceroute|tracepath), `GC_HC_TRACE_TIMEOUT`, `GC_HC_TRACE_MAX_HOPS`,
+  `GC_HC_TRACE_LOG_KEEP`.
+- `gc-hc status` shows pending traceroute captures via `trace:` rows when any
+  probe is in fail-state. Stays silent during steady-state.
+
+### Changed
+- Tool detection prefers `traceroute` (richer output, widely available via
+  `apt install traceroute`) and falls back to `tracepath` (UDP, no root, often
+  preinstalled via iputils). Skips cleanly when neither is installed. No
+  `apt install` at runtime — preserves the zero-dependency contract.
+
 ## [2.1.1] - 2026-05-26
 
 ### Changed

@@ -121,6 +121,15 @@ show_status() {
   printf '  %-13s: %s\n' "last check" "$(status_badge "$last_overall")"
   printf '  %-13s: %s\n' "interval"   "$interval_display"
   printf '  %-13s: %s\n' "next run"   "$next_run"
+
+  # Surface pending traceroute captures so an operator sees fresh diagnostic
+  # context the moment a probe goes red. Stays silent when no probe is in
+  # fail-state — keeps the status block uncluttered during steady-state.
+  local trace_line=""
+  while IFS= read -r trace_line; do
+    [[ -z "$trace_line" ]] && continue
+    printf '  %-13s: %s\n' "trace"      "$trace_line"
+  done < <(trace_pending_failures 2>/dev/null)
   printf '%s\n' "$separator"
   printf '  %-13s: %s %s\n' "tool"   "$APP" "$VERSION"
   printf '  %-13s: %s\n'    "mode"   "$MODE"

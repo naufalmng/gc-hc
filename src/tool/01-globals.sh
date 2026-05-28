@@ -9,6 +9,7 @@ JSON="false"
 YES="false"
 FORCE="false"
 LAST_STEP="init"
+TRACE_FORCE=""
 
 GCLOUD_HOSTED_METRICS_URL="${GCLOUD_HOSTED_METRICS_URL:-}"
 GCLOUD_HOSTED_METRICS_ID="${GCLOUD_HOSTED_METRICS_ID:-}"
@@ -26,6 +27,16 @@ GC_HC_TLS="${GC_HC_TLS:-true}"
 GC_HC_LOKI_WRITE="${GC_HC_LOKI_WRITE:-true}"
 GC_HC_PROM_QUERY="${GC_HC_PROM_QUERY:-true}"
 GC_HC_FLEET="${GC_HC_FLEET:-true}"
+
+# Auto-traceroute on failure. auto = capture once per failure run, reset
+# state when probe recovers. always = force every run. never = disabled.
+# Tool defaults to auto-detect (traceroute > tracepath); skip cleanly if
+# none installed (no apt install at runtime — preserves zero-deps contract).
+GC_HC_TRACE="${GC_HC_TRACE:-auto}"
+GC_HC_TRACE_TOOL="${GC_HC_TRACE_TOOL:-auto}"
+GC_HC_TRACE_TIMEOUT="${GC_HC_TRACE_TIMEOUT:-2}"
+GC_HC_TRACE_MAX_HOPS="${GC_HC_TRACE_MAX_HOPS:-15}"
+GC_HC_TRACE_LOG_KEEP="${GC_HC_TRACE_LOG_KEEP:-50}"
 
 CHECKS=()
 PASS=0
