@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.0] - 2026-05-28
+
 ### Added
 - Auto-traceroute on probe failure. When DNS, TLS, push, query, Loki, or Fleet
   checks fail, `gc-hc` now fires a single traceroute against the affected host,
