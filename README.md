@@ -38,7 +38,7 @@ sudo apt-get remove gc-hc
 
 `gchc` is a short alias for `gc-hc` — same command, fewer keystrokes.
 
-When a probe fails, `gc-hc` auto-fires a traceroute against the affected host so you've got the path right there in the log without SSH-ing in to dig further. Once the probe recovers, it goes quiet again.
+When a probe fails, `gc-hc` automatically runs a traceroute to the affected host, so the path is captured directly in the logs without requiring manual troubleshooting. Once the probe recovers, `gc-hc` resets the state and stops running traceroutes until the next failure.
 
 For full usage, configuration reference, architecture, and design notes, see **[documentation.md](documentation.md)**.
 
@@ -65,7 +65,7 @@ sudo apt-get remove gc-hc
 
 `gchc` adalah alias pendek untuk `gc-hc` — perintah sama, lebih ringkas.
 
-Kalau ada probe yang fail, `gc-hc` otomatis ngejalanin traceroute ke host yang bermasalah, jadi lu udh punya path-nya di log tanpa harus SSH manual buat ngulik. Pas probe-nya pulih, dia diem lagi.
+Kalau ada probe yang gagal, gc-hc otomatis menjalankan traceroute ke host yang bermasalah, jadi jalurnya langsung masuk ke log tanpa perlu tracing manual. Setelah probe pulih, gc-hc akan mereset statusnya dan berhenti menjalankan traceroute sampai kegagalan berikutnya.
 
 Untuk panduan lengkap, referensi konfigurasi, arsitektur, dan catatan desain, lihat **[documentation.md](documentation.md)**.
 
