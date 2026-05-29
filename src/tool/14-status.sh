@@ -154,6 +154,41 @@ show_status() {
   fi
 }
 
+# Pretty-print one JSONL check entry into a single human-readable summary line.
+# Used when `gc-hc logs` is rendering the on-disk check log on a TTY. Stays
+# pure-bash + sed so it works without jq.
+format_log_line() {
+  local line="${1-}"
+  local started overall pass warn fail skip badge
+  local stamp display
+
+  [[ -z "$line" ]] && return 0
+
+  started="$(printf '%s' "$line" | sed -n 's/.*"started":"\([^"]*\)".*/\1/p')"
+  overall="$(printf '%s' "$line" | sed -n 's/.*"overall":"\([^"]*\)".*/\1/p')"
+  pass="$(printf    '%s' "$line" | sed -n 's/.*"pass":\([0-9]*\).*/\1/p')"
+  warn="$(printf    '%s' "$line" | sed -n 's/.*"warn":\([0-9]*\).*/\1/p')"
+  fail="$(printf    '%s' "$line" | sed -n 's/.*"fail":\([0-9]*\).*/\1/p')"
+  skip="$(printf    '%s' "$line" | sed -n 's/.*"skip":\([0-9]*\).*/\1/p')"
+  : "${pass:=0}" "${warn:=0}" "${fail:=0}" "${skip:=0}"
+
+  case "$overall" in
+    pass) badge="✓" ;;
+    warn) badge="!" ;;
+    fail) badge="✗" ;;
+    *)    badge="?" ;;
+  esac
+
+  # Trim seconds suffix off the timestamp for compactness; full ts stays in JSON.
+  stamp="${started%Z}"
+  stamp="${stamp/T/ }"
+  display="${stamp:0:16}"
+  [[ -z "$display" ]] && display="(no-ts)          "
+
+  printf '%s %s %-4s pass=%s warn=%s fail=%s skip=%s\n' \
+    "$display" "$badge" "$overall" "$pass" "$warn" "$fail" "$skip"
+}
+
 # Logs prefer journalctl in system mode (gives us systemd context), and fall
 # back to tailing the local log file otherwise.
 show_logs() {
@@ -162,12 +197,35 @@ show_logs() {
     return 0
   fi
 
-  if [[ -s "$LOG_FILE" ]]; then
+  if [[ ! -s "$LOG_FILE" ]]; then
+    die "no logs found"
+    return 1
+  fi
+
+  # Output mode mirrors run_check: --json or non-TTY → raw JSONL pass-through
+  # (downstream automation can pipe to jq), TTY interactive → human-readable
+  # one-line-per-run summary that's actually grep-able with eyeballs.
+  if [[ "$JSON" == "true" ]] || [[ ! -t 1 ]]; then
     tail -f "$LOG_FILE"
     return 0
   fi
 
-  die "no logs found"
+  printf '  %-16s %s %-4s %s\n' "TIMESTAMP (UTC)" " " "VERDICT" "COUNTS"
+  printf '  %-16s %s %-4s %s\n' "────────────────" " " "──────" "──────────────────────────"
+
+  local line
+  while IFS= read -r line; do
+    [[ -n "$line" ]] || continue
+    printf '  '
+    format_log_line "$line"
+  done < "$LOG_FILE"
+
+  printf '\n  (tailing — Ctrl-C to stop)\n'
+  tail -n 0 -f "$LOG_FILE" | while IFS= read -r line; do
+    [[ -n "$line" ]] || continue
+    printf '  '
+    format_log_line "$line"
+  done
 }
 
 remove_self() {

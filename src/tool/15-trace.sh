@@ -193,21 +193,7 @@ trace_log_write() {
   } >> "$path" 2>/dev/null || return 0
 
   # Tail-rotate: keep only the last $keep "=== ... ===" blocks.
-  if (( keep > 0 )) && [[ -s "$path" ]]; then
-    tmp="${path}.tmp"
-    awk -v keep="$keep" '
-      /^=== / { blocks++; idx[blocks] = NR }
-      { lines[NR] = $0; total = NR }
-      END {
-        if (blocks <= keep) {
-          for (i = 1; i <= total; i++) print lines[i]
-          exit
-        }
-        start = idx[blocks - keep + 1]
-        for (i = start; i <= total; i++) print lines[i]
-      }
-    ' "$path" > "$tmp" 2>/dev/null && mv "$tmp" "$path" 2>/dev/null || rm -f "$tmp" 2>/dev/null
-  fi
+  log_tail_rotate "$path" "$keep" '^=== '
 
   chmod 0640 "$path" 2>/dev/null || true
 }

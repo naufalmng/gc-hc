@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `gc-hc logs` now pretty-prints the on-disk check log on TTY: one summary line
+  per run with timestamp, verdict badge, and counts. `--json` flag and non-TTY
+  invocation still pass through raw JSONL for downstream automation.
+- `GC_HC_LOG_KEEP` env knob (default 100) — auto-rotate the check log to the
+  last N entries. Set to 0 to disable rotation entirely (e.g. when managing
+  with system logrotate). Persisted via `gc-hc config` and surfaced in
+  `gc-hc show-config`.
+- `gc-hc config` interactive flow now offers an opt-in branch to tune the five
+  `GC_HC_TRACE_*` knobs. Defaults stay sane; the prompts only appear on
+  explicit confirm so the typical onboard remains a 5-question flow.
+
+### Changed
+- Check log on disk is now JSONL (one record per line) instead of one giant
+  appended stream. `tail`, `grep`, `wc -l`, and `jq -c` now work as expected.
+- Generic `log_tail_rotate` helper extracted to `04-utils.sh` and reused by
+  both the check log and the trace logs (was inline awk in `15-trace.sh`).
+- `--trace` / `--no-trace` CLI flags re-aligned to 2-space indent in `--help`
+  output to match the rest of the option table.
+
 ## [2.2.0] - 2026-05-28
 
 ### Added

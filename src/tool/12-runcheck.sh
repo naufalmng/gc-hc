@@ -138,7 +138,10 @@ run_check() {
 
   install -d -m 0750 "$STATE_DIR" "$LOG_DIR"
   printf '%s' "$result" > "$RESULT_FILE"
-  printf '%s' "$result" >> "$LOG_FILE"
+  # JSONL: one record per line so tail/grep/jq -c work cleanly. The trailing
+  # newline matters — without it `grep` and `wc -l` undercount the last entry.
+  printf '%s\n' "$result" >> "$LOG_FILE"
+  log_tail_rotate "$LOG_FILE" "${GC_HC_LOG_KEEP:-100}" '^'
   chmod 0640 "$RESULT_FILE" "$LOG_FILE" 2>/dev/null || true
 
   # Output mode:
