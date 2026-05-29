@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.0] - 2026-05-29
+
 ### Added
 - `gc-hc logs` now pretty-prints the on-disk check log on TTY: one summary line
   per run with timestamp, verdict badge, and counts. `--json` flag and non-TTY
