@@ -132,6 +132,7 @@ Configured via `/etc/gc-hc/env` (system mode) or `./.gc-hc/env` (standalone). Th
 | `GC_HC_LOKI_WRITE`               | optional | `false` to skip the Loki write probe                    |
 | `GC_HC_PROM_QUERY`               | optional | `false` to skip the Prometheus query probe              |
 | `GC_HC_FLEET`                    | optional | `false` to skip the Fleet probe                         |
+| `GC_HC_LOG_KEEP`                 | optional | Last N check entries kept in `gc-hc.log` (0 disables, default 100) |
 | `GC_HC_TRACE`                    | optional | `auto` (default), `always`, or `never` — auto-traceroute on probe failure |
 | `GC_HC_TRACE_TOOL`               | optional | `auto` (default), `traceroute`, or `tracepath`          |
 | `GC_HC_TRACE_TIMEOUT`            | optional | Per-hop timeout, seconds (default 2)                    |
@@ -364,6 +365,7 @@ Disimpan di `/etc/gc-hc/env` (system mode) atau `./.gc-hc/env` (standalone). Flo
 | `GC_HC_LOKI_WRITE`               | opsional | `false` untuk skip Loki write probe                     |
 | `GC_HC_PROM_QUERY`               | opsional | `false` untuk skip Prometheus query probe               |
 | `GC_HC_FLEET`                    | opsional | `false` untuk skip Fleet probe                          |
+| `GC_HC_LOG_KEEP`                 | opsional | Last N entry check yang disimpan di `gc-hc.log` (0 = matikan rotasi, default 100) |
 | `GC_HC_TRACE`                    | opsional | `auto` (default), `always`, atau `never` — auto-traceroute saat probe fail |
 | `GC_HC_TRACE_TOOL`               | opsional | `auto` (default), `traceroute`, atau `tracepath`        |
 | `GC_HC_TRACE_TIMEOUT`            | opsional | Timeout per hop, detik (default 2)                      |

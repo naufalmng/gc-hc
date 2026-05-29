@@ -47,8 +47,8 @@ Options:
   --no-loki-write               skip Loki write check
   --no-prom-query               skip Prometheus query check
   --no-fleet                    skip Fleet check
-      --trace                   force traceroute on every probe this run
-      --no-trace                disable traceroute even on failures
+  --trace                       force traceroute on every probe this run
+  --no-trace                    disable traceroute even on failures
 
 Environment overrides (also set via gc-hc config):
   GC_HC_INTERVAL    timer interval (1m, 5m, 15m, 1h)  default: 5m
@@ -59,6 +59,7 @@ Environment overrides (also set via gc-hc config):
   GC_HC_LOKI_WRITE  enable Loki write check           default: true
   GC_HC_PROM_QUERY  enable Prometheus query check     default: true
   GC_HC_FLEET       enable Fleet check                default: true
+  GC_HC_LOG_KEEP    last N check entries kept (0=off) default: 100
   GC_HC_TRACE          auto|always|never              default: auto
   GC_HC_TRACE_TOOL     auto|traceroute|tracepath      default: auto
   GC_HC_TRACE_TIMEOUT  per-hop timeout (seconds)      default: 2

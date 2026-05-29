@@ -22,7 +22,6 @@ source src/tool/15-trace.sh
 
 die()  { printf 'die: %s\n'  "$1" >&2; return 1; }
 warn() { printf 'warn: %s\n' "$1" >&2; }
-
 PASS=0
 FAIL=0
 assert_eq() {
@@ -159,6 +158,38 @@ trace_state_set "prom.dns" "pass"
 assert_eq "pass" "$(trace_state_get "prom.dns")" "round-trip pass"
 assert_eq ""     "$(trace_state_get "nonexistent")" "missing probe → empty"
 rm -rf "$STATE_DIR" "$LOG_DIR"
+
+echo "log_tail_rotate:"
+LOG_TMP="$(mktemp)"
+trap 'rm -f "$LOG_TMP" "$LOG_TMP.rot"' EXIT
+
+# JSONL marker (^): one block per line. Keep last 3 of 5.
+printf '%s\n' '{"n":1}' '{"n":2}' '{"n":3}' '{"n":4}' '{"n":5}' > "$LOG_TMP"
+log_tail_rotate "$LOG_TMP" 3 '^'
+assert_eq '{"n":3}
+{"n":4}
+{"n":5}' "$(cat "$LOG_TMP")" "JSONL keep last 3 of 5"
+
+# Multi-line block marker (^=== ): keep last 2 of 4 trace-style entries.
+printf '%s\n' \
+  '=== 2026-01-01 ===' '1: a 1ms' '2: b 2ms' \
+  '=== 2026-01-02 ===' '1: c 3ms' \
+  '=== 2026-01-03 ===' '1: d 4ms' \
+  '=== 2026-01-04 ===' '1: e 5ms' '2: f 6ms' > "$LOG_TMP"
+log_tail_rotate "$LOG_TMP" 2 '^=== '
+assert_eq 5 "$(grep -c '^=== \|^[0-9]:' "$LOG_TMP")" "trace blocks: 2 markers + 3 hop lines"
+assert_eq "1" "$(grep -c '2026-01-03' "$LOG_TMP")" "trace keep: third block present"
+assert_eq "0" "$(grep -c '2026-01-01' "$LOG_TMP")" "trace drop: first block gone"
+
+# keep=0 disables rotation (file untouched).
+printf '%s\n' '{"n":1}' '{"n":2}' '{"n":3}' > "$LOG_TMP"
+log_tail_rotate "$LOG_TMP" 0 '^'
+assert_eq 3 "$(wc -l < "$LOG_TMP" | tr -d ' ')" "keep=0 leaves file untouched"
+
+# Missing file is a no-op (no error, no creation).
+rm -f "$LOG_TMP"
+log_tail_rotate "$LOG_TMP" 5 '^'
+assert_eq "1" "$([[ ! -e "$LOG_TMP" ]] && echo 1 || echo 0)" "missing file → no-op"
 
 echo
 echo "Total: $PASS passed, $FAIL failed."

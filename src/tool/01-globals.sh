@@ -28,6 +28,12 @@ GC_HC_LOKI_WRITE="${GC_HC_LOKI_WRITE:-true}"
 GC_HC_PROM_QUERY="${GC_HC_PROM_QUERY:-true}"
 GC_HC_FLEET="${GC_HC_FLEET:-true}"
 
+# Log retention. The check log is JSONL (one record per line) and gets
+# tail-rotated to keep the last N entries. 0 = disable rotation (keep all
+# forever — manage via logrotate). Default 100 ≈ 8h of timer-mode history
+# at 5min interval, ~60KB on disk.
+GC_HC_LOG_KEEP="${GC_HC_LOG_KEEP:-100}"
+
 # Auto-traceroute on failure. auto = capture once per failure run, reset
 # state when probe recovers. always = force every run. never = disabled.
 # Tool defaults to auto-detect (traceroute > tracepath); skip cleanly if

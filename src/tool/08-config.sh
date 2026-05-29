@@ -100,6 +100,17 @@ configure() {
     prompt_value "GCLOUD_FM_URL" "Fleet Management URL"
   fi
 
+  # Auto-traceroute knobs are advanced and rarely tuned; gate the prompts
+  # behind a single confirm so the typical onboard stays a 5-question flow.
+  # Unanswered → keep the in-memory defaults from 01-globals.
+  if confirm "Configure auto-traceroute settings? (defaults are sane)" "n"; then
+    prompt_value "GC_HC_TRACE"          "Mode (auto / always / never)"
+    prompt_value "GC_HC_TRACE_TOOL"     "Tool (auto / traceroute / tracepath)"
+    prompt_value "GC_HC_TRACE_TIMEOUT"  "Per-hop timeout (seconds)"
+    prompt_value "GC_HC_TRACE_MAX_HOPS" "Abort after N hops"
+    prompt_value "GC_HC_TRACE_LOG_KEEP" "Last N entries kept per probe log"
+  fi
+
   validate_config
 
   install -d -m 0750 "$CONFIG_DIR" "$STATE_DIR" "$LOG_DIR"
@@ -135,6 +146,7 @@ configure() {
     printf "GC_HC_TRACE_TIMEOUT='%s'\n"  "$GC_HC_TRACE_TIMEOUT"
     printf "GC_HC_TRACE_MAX_HOPS='%s'\n" "$GC_HC_TRACE_MAX_HOPS"
     printf "GC_HC_TRACE_LOG_KEEP='%s'\n" "$GC_HC_TRACE_LOG_KEEP"
+    printf "GC_HC_LOG_KEEP='%s'\n"       "$GC_HC_LOG_KEEP"
   } > "$CONFIG_FILE"
 
   chmod 0600 "$CONFIG_FILE"
@@ -172,4 +184,5 @@ show_config() {
   printf 'GC_HC_TRACE_TIMEOUT=%s\n'  "${GC_HC_TRACE_TIMEOUT:-}"
   printf 'GC_HC_TRACE_MAX_HOPS=%s\n' "${GC_HC_TRACE_MAX_HOPS:-}"
   printf 'GC_HC_TRACE_LOG_KEEP=%s\n' "${GC_HC_TRACE_LOG_KEEP:-}"
+  printf 'GC_HC_LOG_KEEP=%s\n'       "${GC_HC_LOG_KEEP:-}"
 }
